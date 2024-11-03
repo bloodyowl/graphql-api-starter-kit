@@ -1,0 +1,35 @@
+generator client {
+  provider        = "prisma-kysely"
+  output          = "../src/db"
+  fileName        = "types.mts"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = []
+}
+
+model Outbox {
+  id            String   @id
+  aggregateId   String
+  aggregateType String
+  type          String
+  payload       String
+  acknowledged  Boolean
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  @@index([acknowledged, createdAt(sort: Asc)], name: "Outbox_acknowledged_createdAt_asc_idx")
+}
+
+model Pet {
+  id        String   @id
+  ownerId   String
+  type      String
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@index([ownerId], name: "Pet_ownerId_idx")
+}
