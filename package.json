@@ -10,7 +10,7 @@
   "scripts": {
     "generate-schemas": "gql-tada generate-output",
     "update-schemas": "node --no-warnings --experimental-strip-types -r dotenv/config scripts/graphql/updateSchemas.mts",
-    "codegen": "prisma generate && prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/generated.sql && yarn format",
+    "codegen": "prisma generate && prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/generated.sql",
     "postinstall": "yarn generate-schemas && yarn codegen",
     "update-feature-flags": "tggl typing -o types/tggl/index.d.ts -k $TGGL_SERVER_KEY",
     "setup": "prisma migrate dev",
