@@ -1,0 +1,103 @@
+type CannotRegisterPetRejection implements Rejection {
+  message: String!
+}
+
+type InternalErrorRejection implements Rejection {
+  message: String!
+}
+
+type Mutation {
+  registerPet(input: RegisterPetInput!): RegisterPetPayload!
+}
+
+interface Node {
+  globalId: ID!
+}
+
+type NotFoundRejection implements Rejection {
+  message: String!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Pet implements Node {
+  globalId: ID!
+  id: ID!
+  ownerId: ID!
+  type: PetType!
+}
+
+type PetConnection {
+  edges: [PetEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PetEdge {
+  cursor: String!
+  node: Pet
+}
+
+enum PetType {
+  Cat
+  Dog
+  Giraffe
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  pet(id: ID!): Pet
+  pets(after: String, before: String, first: Int, last: Int, types: [PetType!]): PetConnection
+}
+
+input RegisterPetInput {
+  type: PetType!
+}
+
+union RegisterPetPayload = CannotRegisterPetRejection | InternalErrorRejection | RegisterPetSuccessPayload | UnauthorizedRejection | ValidationRejection
+
+type RegisterPetSuccessPayload {
+  pet: Pet!
+}
+
+interface Rejection {
+  message: String!
+}
+
+type UnauthorizedRejection implements Rejection {
+  message: String!
+}
+
+type User {
+  id: ID!
+  pets(after: String, before: String, first: Int, last: Int, types: [PetType!]): PetConnection
+}
+
+type ValidationFieldError {
+  message: String
+  path: [String!]
+}
+
+type ValidationRejection implements Rejection {
+  fields: [ValidationFieldError!]
+  message: String!
+}
+
+scalar _Any
+
+union _Entity = User
+
+type _Service {
+  """
+  The sdl representing the federated service capabilities. Includes federation directives, removes federation types, and includes rest of full schema after schema directives have been applied
+  """
+  sdl: String
+}

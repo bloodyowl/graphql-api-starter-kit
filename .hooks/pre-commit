@@ -1,0 +1,2 @@
+#!/bin/sh
+yarn generate-sub-schemas

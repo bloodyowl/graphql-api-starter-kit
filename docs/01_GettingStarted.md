@@ -6,6 +6,7 @@ This is a starter kit for a GraphQL server to be federated using Apollo.
 
 ```console
 $ yarn
+$ yarn configure-hooks
 ```
 
 ## Codegen
