@@ -13,6 +13,7 @@ jobs:
       contents: read # This is required for actions/checkout
       id-token: write # This is required for requesting the JWT
       checks: write
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
 
