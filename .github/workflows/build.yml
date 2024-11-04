@@ -23,9 +23,6 @@ jobs:
       - name: Install dependencies
         run: yarn --pure-lockfile
 
-      - name: Generate sub schemas
-        run: yarn generate-sub-schemas
-
       - name: Typecheck
         run: yarn typecheck
 
