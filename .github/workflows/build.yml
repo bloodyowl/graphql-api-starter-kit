@@ -38,3 +38,4 @@ jobs:
         uses: kamilkisiela/graphql-inspector@master
         with:
           schema: "main:src/graphql/partner/partner.gql"
+          github-token: ${{ github.token }}
