@@ -34,6 +34,7 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      - uses: kamilkisiela/graphql-inspector@master
+      - name: Check for API breaking changes
+        uses: kamilkisiela/graphql-inspector@master
         with:
           schema: "main:src/graphql/partner/partner.gql"
