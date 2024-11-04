@@ -1,5 +1,6 @@
 import { type Kafka } from "#app/events/events.mts";
 import { type Topics } from "#app/events/topics.mts";
+import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import { type EventContext } from "#app/utils/context.mts";
 import { Future, Result } from "@swan-io/boxed";
 import { type IHeaders } from "kafkajs";
@@ -74,7 +75,20 @@ export const createTestKafka = async (context: EventContext) => {
     receive: message => {
       const subscribersForTopic = subscribers.get(message.topic) ?? new Set();
       const funcs = [...subscribersForTopic];
-      return Future.all(funcs.map(func => func(message, context)));
+      const logger = context.log.child(
+        { eventTop: message.topic, eventId: message.message.key },
+        {},
+      );
+      return loggerAsyncLocalStorage.run(logger, () =>
+        Future.all(
+          funcs.map(func =>
+            func(message, {
+              ...context,
+              log: logger,
+            }),
+          ),
+        ),
+      );
     },
     emitted: () => emitted,
   };

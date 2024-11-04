@@ -20,9 +20,12 @@ export const identityEvents = (
         },
       },
       ({ identityDeleted: { userId } }) =>
-        deleteAllUserPets({ userId }, context.db).mapOk(
-          () => MessageHandling.handled,
-        ),
+        deleteAllUserPets({ userId }, context.db)
+          .tapOk(() => context.log.info("Succesfully deleted all pets"))
+          .tapError(error =>
+            context.log.error(error, "Couldn't delete all pets"),
+          )
+          .mapOk(() => MessageHandling.handled),
     )
     .otherwise(() => Future.value(Result.Ok(MessageHandling.ignored)));
 };

@@ -5,6 +5,7 @@ import {
   MessageHandling,
 } from "#app/events/events.mts";
 import { type Topics } from "#app/events/topics.mts";
+import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import { type EventContext } from "#app/utils/context.mts";
 import { KafkaError } from "#app/utils/errors.mts";
 import { Future, Result } from "@swan-io/boxed";
@@ -40,13 +41,21 @@ export const createProdKafka = async (
     ) => Future<Result<MessageHandling, unknown>> = subscribersByTopic.get(
       message.topic,
     );
+
+    const logger = context.log.child(
+      { eventTop: message.topic, eventId: message.message.key },
+      {},
+    );
+
     if (matchingSubscriber == undefined) {
       return Future.value(Result.Ok(MessageHandling.ignored)).resultToPromise();
     } else {
-      return matchingSubscriber(
-        message as unknown as Message<Topic>,
-        context,
-      ).resultToPromise();
+      return loggerAsyncLocalStorage.run(logger, () =>
+        matchingSubscriber(
+          message as unknown as Message<Topic>,
+          context,
+        ).resultToPromise(),
+      );
     }
   };
 

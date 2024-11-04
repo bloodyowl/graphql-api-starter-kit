@@ -13,6 +13,7 @@ import { createFeaturesFlags } from "#app/utils/featureFlags.mts";
 import { identityEvents } from "#app/events/consumers/identityEvents.mts";
 import { type Kafka } from "#app/events/events.mts";
 import { partnerSchema } from "#app/graphql/partner/schema.mts";
+import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginInlineTrace } from "@apollo/server/plugin/inlineTrace";
 import {
@@ -21,8 +22,9 @@ import {
   type ApolloFastifyContextFunction,
 } from "@as-integrations/fastify";
 import fastifyCors from "@fastify/cors";
+import { Option } from "@swan-io/boxed";
 import { randomUUID } from "crypto";
-import fastify from "fastify";
+import fastify, { type FastifyRequest } from "fastify";
 import { match, P } from "ts-pattern";
 import packageJson from "../package.json" with { type: "json" };
 
@@ -55,6 +57,20 @@ export const start = async <K extends Kafka>(
         formatters: {
           level(label) {
             return { level: label };
+          },
+        },
+        serializers: {
+          req(request: FastifyRequest) {
+            return {
+              method: request.method,
+              url: request.url,
+              auth: Option.fromNullable(getAuth(request))
+                .map(
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  ({ authorization, ...rest }) => rest,
+                )
+                .toNull(),
+            };
           },
         },
       }),
@@ -143,12 +159,19 @@ export const start = async <K extends Kafka>(
     return request.context;
   };
 
+  const handler = fastifyApolloHandler(partnerApi, {
+    context: getContext,
+  });
+
   app.route({
     url: "/partner",
     method: ["GET", "POST", "OPTIONS"],
-    handler: fastifyApolloHandler(partnerApi, {
-      context: getContext,
-    }),
+    handler: (request, reply) => {
+      return loggerAsyncLocalStorage.run(request.log, () => {
+        // @ts-expect-error Generics don't match
+        return handler.call(app, request, reply);
+      });
+    },
   });
 
   kafka.subscribe("identityEvents", identityEvents);
