@@ -29,7 +29,7 @@ export interface IdentityEvent {
 }
 
 export interface IdentityCreatedEvent {
-  $type: "io.swan.events.identityEvents.cCreatedEvent";
+  $type: "io.swan.events.identityEvents.identityCreatedEvent";
   userId: string;
 }
 

@@ -3,3 +3,4 @@ node_modules/
 src/db/types.mts
 types/graphql/*-env.d.ts
 dist/
+.env
