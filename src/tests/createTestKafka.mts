@@ -1,4 +1,9 @@
-import { type Kafka } from "#app/events/events.mts";
+import {
+  handled,
+  MessageHandling,
+  type Kafka,
+  type Message,
+} from "#app/events/events.mts";
 import { type Topics } from "#app/events/topics.mts";
 import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import { type EventContext } from "#app/utils/context.mts";
@@ -68,27 +73,42 @@ export const createTestKafka = async (context: EventContext) => {
       );
     },
     subscribe: (topic, func) => {
-      const subscribersForTopic = subscribers.get(topic) ?? new Set();
-      subscribers.set(topic, subscribersForTopic);
-      subscribersForTopic.add(func);
+      subscribers.set(topic, func);
     },
-    receive: message => {
-      const subscribersForTopic = subscribers.get(message.topic) ?? new Set();
-      const funcs = [...subscribersForTopic];
+    receive: <Topic extends keyof Topics>(message: Message<Topic>) => {
       const logger = context.log.child(
         { eventTop: message.topic, eventId: message.message.key },
         {},
       );
-      return loggerAsyncLocalStorage.run(logger, () =>
-        Future.all(
-          funcs.map(func =>
-            func(message, {
-              ...context,
-              log: logger,
-            }),
-          ),
-        ),
-      );
+
+      return loggerAsyncLocalStorage.run(logger, () => {
+        const subscriberForTopic:
+          | ((
+              message: Message<Topic>,
+              context: EventContext,
+            ) => Future<Result<MessageHandling, unknown>>)
+          | undefined = subscribers.get(message.topic);
+
+        if (subscriberForTopic == undefined) {
+          logger.info({}, "Event ignored");
+          return Future.value(Result.Ok(MessageHandling.ignored));
+        }
+
+        return subscriberForTopic(message, {
+          ...context,
+          log: logger,
+        })
+          .tapOk(handling => {
+            if (handling === handled) {
+              logger.info({}, "Event processed");
+            } else {
+              logger.info({}, "Event ignored");
+            }
+          })
+          .tapError(error => {
+            logger.error(error, "Error processing event");
+          });
+      });
     },
     emitted: () => emitted,
   };

@@ -1,5 +1,6 @@
 import { env } from "#app/env.mts";
 import {
+  handled,
   type Kafka,
   type Message,
   MessageHandling,
@@ -48,13 +49,22 @@ export const createProdKafka = async (
     );
 
     if (matchingSubscriber == undefined) {
+      logger.info({}, "Event ignored");
       return Future.value(Result.Ok(MessageHandling.ignored)).resultToPromise();
     } else {
       return loggerAsyncLocalStorage.run(logger, () =>
-        matchingSubscriber(
-          message as unknown as Message<Topic>,
-          context,
-        ).resultToPromise(),
+        matchingSubscriber(message as unknown as Message<Topic>, context)
+          .tapOk(handling => {
+            if (handling === handled) {
+              logger.info({}, "Event processed");
+            } else {
+              logger.info({}, "Event ignored");
+            }
+          })
+          .tapError(error => {
+            logger.error(error, "Error processing event");
+          })
+          .resultToPromise(),
       );
     }
   };
@@ -74,7 +84,14 @@ export const createProdKafka = async (
             value: message.value as unknown as Buffer,
           })),
         }),
-      ).mapError(error => new KafkaError(error));
+      )
+        .mapError(error => new KafkaError(error))
+        .tapError(error => {
+          const logger = loggerAsyncLocalStorage.getStore();
+          if (logger != undefined) {
+            logger.error(error, "Error emitting event");
+          }
+        });
     },
     subscribe: (topic, handler) => {
       subscribersByTopic.set(topic, handler);
