@@ -12,7 +12,7 @@ import { createFeaturesFlags } from "#app/utils/featureFlags.mts";
 
 import { identityEvents } from "#app/events/consumers/identityEvents.mts";
 import { type Kafka } from "#app/events/events.mts";
-import { partnerSchema } from "#app/graphql/partner/schema.mts";
+import { schema, subGraphsSchemas } from "#app/graphql/schema.mts";
 import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginInlineTrace } from "@apollo/server/plugin/inlineTrace";
@@ -141,38 +141,77 @@ export const start = async <K extends Kafka>(
     });
   });
 
-  const partnerApi = new ApolloServer<RequestContext>({
-    schema: partnerSchema,
-    plugins: [
-      fastifyApolloDrainPlugin(app),
-      ApolloServerPluginInlineTrace({
-        includeErrors: { transform: err => err },
-      }),
-    ],
-  });
+  if (env.NODE_ENV === "development") {
+    const testingApi = new ApolloServer<RequestContext>({
+      schema: schema,
+      plugins: [
+        fastifyApolloDrainPlugin(app),
+        ApolloServerPluginInlineTrace({
+          includeErrors: { transform: err => err },
+        }),
+      ],
+    });
 
-  await partnerApi.start();
+    await testingApi.start();
 
-  const getContext: ApolloFastifyContextFunction<
-    RequestContext
-  > = async request => {
-    return request.context;
-  };
+    const getContext: ApolloFastifyContextFunction<
+      RequestContext
+    > = async request => {
+      return request.context;
+    };
 
-  const handler = fastifyApolloHandler(partnerApi, {
-    context: getContext,
-  });
+    const handler = fastifyApolloHandler(testingApi, {
+      context: getContext,
+    });
 
-  app.route({
-    url: "/partner",
-    method: ["GET", "POST", "OPTIONS"],
-    handler: (request, reply) => {
-      return loggerAsyncLocalStorage.run(request.log, () => {
-        // @ts-expect-error Generics don't match
-        return handler.call(app, request, reply);
+    app.route({
+      url: "/graphql",
+      method: ["GET", "POST", "OPTIONS"],
+      handler: (request, reply) => {
+        return loggerAsyncLocalStorage.run(request.log, () => {
+          // @ts-expect-error Generics don't match
+          return handler.call(app, request, reply);
+        });
+      },
+    });
+  }
+
+  await Promise.all(
+    subGraphsSchemas.map(async ({ pathname, schema }) => {
+      const api = new ApolloServer<RequestContext>({
+        schema,
+        plugins: [
+          fastifyApolloDrainPlugin(app),
+          ApolloServerPluginInlineTrace({
+            includeErrors: { transform: err => err },
+          }),
+        ],
       });
-    },
-  });
+
+      await api.start();
+
+      const getContext: ApolloFastifyContextFunction<
+        RequestContext
+      > = async request => {
+        return request.context;
+      };
+
+      const handler = fastifyApolloHandler(api, {
+        context: getContext,
+      });
+
+      app.route({
+        url: pathname,
+        method: ["GET", "POST", "OPTIONS"],
+        handler: (request, reply) => {
+          return loggerAsyncLocalStorage.run(request.log, () => {
+            // @ts-expect-error Generics don't match
+            return handler.call(app, request, reply);
+          });
+        },
+      });
+    }),
+  );
 
   kafka.subscribe("identityEvents", identityEvents);
 

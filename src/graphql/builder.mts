@@ -2,9 +2,11 @@ import SchemaBuilder from "@pothos/core";
 import DataloaderPlugin from "@pothos/plugin-dataloader";
 import DirectivePlugin from "@pothos/plugin-directives";
 import ErrorsPlugin from "@pothos/plugin-errors";
-import FederationPlugin from "@pothos/plugin-federation";
+import FederationPlugin, { hasResolvableKey } from "@pothos/plugin-federation";
 import RelayPlugin from "@pothos/plugin-relay";
-import ZodPlugin from "@pothos/plugin-zod";
+import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
+import SubGraphPlugin from "@pothos/plugin-sub-graph";
+
 import { type Future, type Result } from "@swan-io/boxed";
 
 import { env } from "#app/env.mts";
@@ -12,6 +14,13 @@ import { CannotRegisterPetRejection } from "#app/graphql/rejections/CannotRegist
 import { NotFoundRejection } from "#app/graphql/rejections/NotFoundRejection.mts";
 import { Rejection } from "#app/graphql/rejections/Rejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
+import { type SubGraph } from "#app/graphql/subGraphs.mts";
+import {
+  type Auth,
+  type ProjectAuth,
+  type ProjectMemberAuth,
+  type UserAuth,
+} from "#app/utils/auth.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { type DatabaseError } from "#app/utils/errors.mts";
 import { ZodError, type ZodFormattedError } from "zod";
@@ -27,17 +36,43 @@ export const builder = new SchemaBuilder<{
   Connection: {
     totalCount: { get: () => Future<Result<number, DatabaseError>> };
   };
+  SubGraphs: SubGraph;
+  AuthScopes: {
+    authenticated: boolean;
+    user: boolean;
+    project: boolean;
+    projectMember: boolean;
+  };
+  AuthContexts: {
+    authenticated: RequestContext & { auth: Auth };
+    user: RequestContext & { auth: UserAuth };
+    project: RequestContext & { auth: ProjectAuth };
+    projectMember: RequestContext & { auth: ProjectMemberAuth };
+  };
 }>({
   plugins: [
+    RelayPlugin,
     ErrorsPlugin,
+    ScopeAuthPlugin,
     DataloaderPlugin,
     DirectivePlugin,
     FederationPlugin,
-    RelayPlugin,
-    ZodPlugin,
+    SubGraphPlugin,
   ],
   relay: {
-    idFieldName: "globalId",
+    nodeQueryOptions: false,
+    nodesQueryOptions: false,
+    edgesFieldOptions: {
+      nullable: {
+        // @ts-expect-error Typed as `true`
+        list: false,
+        // @ts-expect-error Typed as `true`
+        items: false,
+      },
+    },
+    nodeFieldOptions: {
+      nullable: false,
+    },
   },
   errors: {
     defaultTypes: [Error, ZodError],
@@ -46,6 +81,24 @@ export const builder = new SchemaBuilder<{
     },
     defaultUnionOptions: {
       name: ({ fieldName }) => `${fieldName}Payload`,
+    },
+  },
+  subGraphs: {
+    defaultForTypes: ["internal", "partner"],
+    fieldsInheritFromTypes: true,
+    explicitlyIncludeType: type => hasResolvableKey(type),
+  },
+  scopeAuth: {
+    treatErrorsAsUnauthorized: true,
+    unauthorizedError: () => new UnauthorizedRejection("Unauthorized"),
+    authScopes: context => {
+      const auth = context.auth;
+      return {
+        authenticated: auth != undefined,
+        user: auth?.type === "User",
+        project: auth?.type === "Project",
+        projectMember: auth?.type === "ProjectMember",
+      };
     },
   },
 });

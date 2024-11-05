@@ -1,5 +1,4 @@
 import { start } from "#app/app.mts";
-import { type DB } from "#app/db/types.mts";
 import { type Kafka } from "#app/events/events.mts";
 import { type ClientsContext } from "#app/utils/context.mts";
 import {
@@ -7,8 +6,9 @@ import {
   InvalidGraphQLResponseError,
   parseGraphQLError,
 } from "#app/utils/errors.mts";
+import { type DB } from "#types/db/db.mts";
 
-import type { introspection } from "#types/graphql/self-partner-env.d.ts";
+import type { introspection } from "#types/graphql/schema-env.d.ts";
 
 import { Future, Result } from "@swan-io/boxed";
 import { initGraphQLTada, type TadaDocumentNode } from "gql.tada";
@@ -86,7 +86,7 @@ export const testWithApp = (
           return Future.fromPromise(
             app.inject({
               method: "POST",
-              url: "/partner",
+              url: "/graphql",
               payload: JSON.stringify({
                 query: print(document),
                 variables,
@@ -144,19 +144,34 @@ export const testWithApp = (
   });
 };
 
-export function assertTypename<V extends string, E extends V>(
-  value: V,
-  expected: E,
-): asserts value is E {
-  assert.equal(value, expected);
-}
-
 export function assertIsDefined<T>(value: T): asserts value is NonNullable<T> {
   assert(value != null);
+}
+
+export function assertIsTrue(value: boolean): asserts value is true {
+  assert(value === true);
+}
+
+export function assertIsFalse(value: boolean): asserts value is false {
+  assert(value === false);
 }
 
 export function assertIsNotDefined<T>(
   value: T,
 ): asserts value is T & (null | undefined) {
   assert(value == null);
+}
+
+export function assertEqual<T, E extends T>(
+  value: T,
+  expected: E,
+): asserts value is E {
+  assert.equal(value, expected);
+}
+
+export function assertDeepEqual<T, E extends T>(
+  value: T,
+  expected: E,
+): asserts value is E {
+  assert.deepEqual(value, expected);
 }

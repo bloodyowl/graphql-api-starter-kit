@@ -1,4 +1,4 @@
-import { deleteAllUserPets } from "#app/db/queries/deleteAllUserPets.mts";
+import { deleteAllUserPets } from "#app/db/deleteAllUserPets.mts";
 import { MessageHandling, type Message } from "#app/events/events.mts";
 import { type EventContext } from "#app/utils/context.mts";
 import { Future, Result } from "@swan-io/boxed";

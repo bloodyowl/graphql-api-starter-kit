@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-kysely"
-  output          = "../src/db"
-  fileName        = "types.mts"
+  output          = "../types/db"
+  fileName        = "db.mts"
   previewFeatures = ["postgresqlExtensions"]
 }
 

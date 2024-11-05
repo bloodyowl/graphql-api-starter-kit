@@ -1,4 +1,4 @@
-import { fromDb, type PetType } from "#app/graphql/partner/objects/Pet.mts";
+import { fromDb, type PetType } from "#app/graphql/objects/Pet.mts";
 import { type Db } from "#app/utils/context.mts";
 import { DatabaseError } from "#app/utils/errors.mts";
 import {

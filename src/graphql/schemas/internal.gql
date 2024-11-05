@@ -1,0 +1,93 @@
+# This is a generated file, don't edit
+
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.4"
+    import: ["@extends", "@external", "@key"]
+  )
+
+type CannotRegisterPetRejection implements Rejection {
+  message: String!
+}
+
+type InternalErrorRejection implements Rejection {
+  message: String!
+}
+
+type Mutation {
+  registerPet(input: RegisterPetInput!): RegisterPetPayload!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Pet {
+  id: ID!
+  type: PetType!
+  ownerId: ID!
+}
+
+type PetConnection {
+  pageInfo: PageInfo!
+  edges: [PetEdge!]!
+  totalCount: Int!
+}
+
+type PetEdge {
+  node: Pet!
+  cursor: String!
+}
+
+enum PetType {
+  Cat
+  Dog
+  Giraffe
+}
+
+type Query {
+  pet(id: ID!): Pet
+  pets(
+    before: String
+    after: String
+    first: Int
+    last: Int
+    types: [PetType!]
+  ): PetConnection
+}
+
+input RegisterPetInput {
+  type: PetType!
+}
+
+union RegisterPetPayload =
+  | UnauthorizedRejection
+  | CannotRegisterPetRejection
+  | ValidationRejection
+  | InternalErrorRejection
+  | RegisterPetSuccessPayload
+
+type RegisterPetSuccessPayload {
+  pet: Pet!
+}
+
+interface Rejection {
+  message: String!
+}
+
+type UnauthorizedRejection implements Rejection {
+  message: String!
+}
+
+type ValidationFieldError {
+  message: String
+  path: [String!]
+}
+
+type ValidationRejection implements Rejection {
+  message: String!
+  fields: [ValidationFieldError!]
+}

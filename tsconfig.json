@@ -40,11 +40,13 @@
         "name": "gql.tada/ts-plugin",
         "trackFieldUsage": false,
         "schemas": [
+          // API
           {
             "name": "self",
-            "schema": "./src/graphql/partner/partner.gql",
-            "tadaOutputLocation": "./types/graphql/self-partner-env.d.ts"
+            "schema": "./src/graphql/schemas/schema.gql",
+            "tadaOutputLocation": "./types/graphql/schema-env.d.ts"
           },
+          // Clients
           {
             "name": "partner",
             "schema": "./scripts/graphql/dist/partner-schema.gql",

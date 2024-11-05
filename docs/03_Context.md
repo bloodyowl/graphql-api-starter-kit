@@ -38,29 +38,15 @@ const myFlag = context.featureFlags
     Option.fromPredicate(value, x => x).toResult(new UnauthorizedRejection()),
   );
 
-const auth = filterAuth(auth, { type: "User" });
-
-return Future.allFromDict({ myFlag, auth })
-  .map(Result.allFromDict)
-  .flatMapOk(({ myFlag, auth }) => {
-    // flag active and auth is `User` in this branch
-  });
+return myFlag.flatMapOk(myFlag => {
+  // flag active and auth is `User` in this branch
+});
 ```
 
 #### As a filter
 
 ```ts
-const myFlag = context.featureFlags
-  .get("myFlag", false)
-  .map(value =>
-    Option.fromPredicate(value, x => x).toResult(new UnauthorizedRejection()),
-  );
+const myFlag = context.featureFlags.get("myFlag", false);
 
-const auth = filterAuth(auth, { type: "User" });
-
-return Future.allFromDict({ myFlag, auth })
-  .mapOkToResult(({ myFlag, auth }) => auth.map(auth => ({ auth, myFlag })))
-  .flatMapOk(({ myFlag, auth }) => {
-    // flag active or inactive and auth is `User` in this branch
-  });
+myFlag.flatMap(myFlag => getUser({ myFlag }));
 ```

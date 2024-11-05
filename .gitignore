@@ -1,6 +1,6 @@
 prisma/generated.sql
 node_modules/
-src/db/types.mts
 types/graphql/*-env.d.ts
+types/db/*.d.ts
 dist/
 .env

@@ -1,8 +1,6 @@
-import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
-import { Future, Option } from "@swan-io/boxed";
 import { type FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
-import { isMatching, match, P } from "ts-pattern";
+import { match, P } from "ts-pattern";
 
 type Env = "Sandbox" | "Live";
 
@@ -95,7 +93,6 @@ export const getAuth = (request: FastifyRequest) => {
               ),
             ),
             scopes: P.select("oauthScopes", P.array(P.string)),
-            authorization,
           },
         },
       },
@@ -136,17 +133,4 @@ export const getAuth = (request: FastifyRequest) => {
       }),
     )
     .otherwise(() => undefined);
-};
-
-export const filterAuth = <Predicate extends P.Pattern<Auth>>(
-  auth: Auth | undefined,
-  predicate: Predicate,
-) => {
-  return Future.value(
-    Option.fromPredicate(auth, isMatching(predicate))
-      .map(x => x as Auth & typeof x)
-      .toResult(
-        new UnauthorizedRejection("Unauthorized for this authentication type"),
-      ),
-  );
 };

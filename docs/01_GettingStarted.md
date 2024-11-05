@@ -64,9 +64,7 @@ $ yarn test
   - `clients`: APIs the app consume
   - `db`: database queries
   - `events`: kafka event handlers
-  - `graphql`:
-    - `partner`: schema and resolvers for the exposed partner API
-    - `rejections`: rejections that can be shared between schemas
+  - `graphql`: schemas definitions
   - `metrics`: `prom` utils
   - `tests`: test utilities
   - `utils`: utilities

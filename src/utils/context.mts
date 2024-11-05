@@ -1,8 +1,8 @@
 import { type PartnerClient } from "#app/clients/partner/partner.mts";
 import { type filterAccountMembership } from "#app/clients/partner/queries/filterAccountMembership.mts";
-import { type DB } from "#app/db/types.mts";
 import { type Kafka } from "#app/events/events.mts";
 import { type FeatureFlags } from "#app/utils/featureFlags.mts";
+import { type DB } from "#types/db/db.mts";
 import {
   type FastifyBaseLogger,
   type FastifyReply,
@@ -31,6 +31,10 @@ export type RequestContext = GlobalContext &
     featureFlags: FeatureFlags;
     partnerClient: PartnerClient;
   };
+
+export type AuthenticatedRequestContext<AllowedAuth = Auth> = RequestContext & {
+  auth: AllowedAuth;
+};
 
 export type EventContext = GlobalContext &
   ClientsContext & {

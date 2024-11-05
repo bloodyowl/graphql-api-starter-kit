@@ -1,8 +1,8 @@
 import { createUserToken } from "#app/tests/testTokens.mts";
 import {
+  assertEqual,
   assertIsDefined,
   assertIsNotDefined,
-  assertTypename,
   testWithApp,
 } from "#app/tests/testWithApp.mts";
 
@@ -36,7 +36,7 @@ suite("identity events", async () => {
         { input: { type: "Cat" } },
         userToken,
       );
-      assertTypename(
+      assertEqual(
         registration.registerPet.__typename,
         "RegisterPetSuccessPayload",
       );

@@ -1,9 +1,9 @@
 import { start } from "#app/app.mts";
-import { type DB } from "#app/db/types.mts";
 import { env } from "#app/env.mts";
 import { createProdKafka } from "#app/events/kafka.mts";
 import { createTestKafka } from "#app/tests/createTestKafka.mts";
 import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
+import { type DB } from "#types/db/db.mts";
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 

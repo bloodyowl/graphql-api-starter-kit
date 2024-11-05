@@ -1,8 +1,38 @@
 # GraphQL
 
-## See the currently exposed schema
+## See the currently exposed schemas
 
-You can go to `src/graphql/partner/partner.gql` to have a look at the schema you're currently exposing.
+You can go to `src/graphql/schemas` to have a look at the schemas you're currently exposing.
+
+## Refine auth
+
+You can use `t.withAuth(config).field(...)` or `t.withAuth(config).loadable(...)` to filter on the accepted auth contexts.
+
+```ts
+t.withAuth({ authenticated: true }); // only accept authenticated requests
+t.withAuth({ user: true }); // only accept user requests
+t.withAuth({ project: true }); // only accept project requests
+t.withAuth({ projectMember: true }); // only accept project member requests
+t.withAuth({ $any: { user: true, projectMember: true } }); // only both user & project member requests
+```
+
+## Limit visibility on a subgraph
+
+You can limit the subgraphs a field is published on using the `subGraphs` option. By default, a field is exposed to all subgraphs.
+
+Unused types are automatically filtered out from the output schema.
+
+```ts
+t.field({
+  // Only on internal subgraph
+  subGraphs: ["internal"],
+});
+
+t.field({
+  // Only for development
+  subGraphs: [],
+});
+```
 
 ## Create a dataloaded object
 
@@ -81,49 +111,50 @@ export type PetArgs = DefaultConnectionArguments & {
   types?: PetType[] | undefined | null;
 };
 
-export const pets = (args: PetArgs, context: RequestContext) => {
-  const auth = filterAuth(context.auth, { type: "User" });
+export const pets = (
+  args: PetArgs,
+  context: AuthenticatedRequestContext<UserAuth>,
+) => {
   const types = args.types ?? petTypes.array;
+  const userId = context.auth.userId;
 
   context.log.info(`pets (${types})`);
 
-  return auth.flatMapOk(({ userId }) =>
-    Future.fromPromise(
-      // Resolves the correct pageInfo/cursor
-      resolveCursorConnection(
-        {
-          args: args,
-          toCursor: node =>
-            getCursorForOrderBy(node, "createdAt", x => x.toISOString()),
-        },
-        (connectionArgs: ResolveCursorConnectionArgs) => {
-          return getPetsConnection(
-            {
-              ...connectionArgs,
-              types,
-              userId,
-              orderBy: "createdAt",
-            },
-            context.db,
-          )
-            .tapOk(pets => {
-              // Primes the cache for future access
-              pets.forEach(pet => {
-                PetRef.getDataloader(context).prime(pet.id, pet);
-              });
-            })
-            .resultToPromise();
-        },
-      ),
-    )
-      .mapError(err => new DatabaseError(err))
-      .mapOk(connection => ({
-        ...connection,
-        // `Lazy` makes the totalCount data loaded as well!
-        totalCount: Lazy(() => countPets({ types, userId }, context.db)),
-      }))
-      .tapError(error => context.log.warn(error, error.message)),
-  );
+  return Future.fromPromise(
+    // Resolves the correct pageInfo/cursor
+    resolveCursorConnection(
+      {
+        args: args,
+        toCursor: node =>
+          getCursorForOrderBy(node, "createdAt", x => x.toISOString()),
+      },
+      (connectionArgs: ResolveCursorConnectionArgs) => {
+        return getPetsConnection(
+          {
+            ...connectionArgs,
+            types,
+            userId,
+            orderBy: "createdAt",
+          },
+          context.db,
+        )
+          .tapOk(pets => {
+            // Primes the cache for future access
+            pets.forEach(pet => {
+              PetRef.getDataloader(context).prime(pet.id, pet);
+            });
+          })
+          .resultToPromise();
+      },
+    ),
+  )
+    .mapError(err => new DatabaseError(err))
+    .mapOk(connection => ({
+      ...connection,
+      // `Lazy` makes the totalCount data loaded as well!
+      totalCount: Lazy(() => countPets({ types, userId }, context.db)),
+    }))
+    .tapError(error => context.log.warn(error, error.message));
 };
 ```
 

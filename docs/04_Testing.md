@@ -44,10 +44,7 @@ testWithApp(
     );
 
     // Assert that the error message is correct
-    assertTypename(
-      registration.registerPet.__typename,
-      "UnauthorizedRejection",
-    );
+    assertEqual(registration.registerPet.__typename, "UnauthorizedRejection");
   },
 );
 ```
@@ -81,7 +78,7 @@ testWithApp(
       { input: { type: "Cat" } },
       userToken,
     );
-    assertTypename(
+    assertEqual(
       registration.registerPet.__typename,
       "RegisterPetSuccessPayload",
     );
@@ -126,7 +123,7 @@ testWithApp(
       { input: { type: "Cat" } },
       userToken,
     );
-    assertTypename(
+    assertEqual(
       registration.registerPet.__typename,
       "RegisterPetSuccessPayload",
     );

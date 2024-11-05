@@ -1,15 +1,15 @@
 import { createUserToken } from "#app/tests/testTokens.mts";
 import {
+  assertEqual,
   assertIsDefined,
-  assertTypename,
   testWithApp,
 } from "#app/tests/testWithApp.mts";
 
 import { suite } from "node:test";
 
-const userToken = createUserToken({ userId: crypto.randomUUID() });
-
 suite("registerTest", async () => {
+  const userToken = createUserToken({ userId: crypto.randomUUID() });
+
   testWithApp(
     "registerPet requires auth",
     async ({ partner: { graphql, run } }) => {
@@ -33,10 +33,7 @@ suite("registerTest", async () => {
         `),
         { input: { type: "Dog" } },
       );
-      assertTypename(
-        registration.registerPet.__typename,
-        "UnauthorizedRejection",
-      );
+      assertEqual(registration.registerPet.__typename, "UnauthorizedRejection");
     },
   );
 
@@ -64,7 +61,7 @@ suite("registerTest", async () => {
         { input: { type: "Cat" } },
         userToken,
       );
-      assertTypename(
+      assertEqual(
         registration.registerPet.__typename,
         "RegisterPetSuccessPayload",
       );
@@ -106,10 +103,7 @@ suite("registerTest", async () => {
         userToken,
       );
 
-      assertTypename(
-        registration.registerPet.__typename,
-        "ValidationRejection",
-      );
+      assertEqual(registration.registerPet.__typename, "ValidationRejection");
     },
   );
 });

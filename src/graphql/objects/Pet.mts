@@ -1,5 +1,5 @@
-import { getPetById } from "#app/db/queries/getPetById.mts";
-import { builder } from "#app/graphql/partner/builder.mts";
+import { getPetById } from "#app/db/getPetById.mts";
+import { builder } from "#app/graphql/builder.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { DatabaseParseError } from "#app/utils/errors.mts";
 import { deriveUnion } from "#app/utils/types.mts";
@@ -46,14 +46,14 @@ export const load = async (ids: string[], context: RequestContext) => {
   );
 };
 
-export const PetRef = builder.loadableNode(Pet, {
-  id: {
-    resolve: pet => pet.id,
-  },
+export const PetRef = builder.loadableObject(Pet, {
   load,
   fields: t => ({
     id: t.exposeID("id", { nullable: false }),
     type: t.expose("type", { type: PetType, nullable: false }),
-    ownerId: t.exposeID("ownerId", { nullable: false }),
+    ownerId: t.exposeID("ownerId", {
+      nullable: false,
+      subGraphs: ["internal"],
+    }),
   }),
 });

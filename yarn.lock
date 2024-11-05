@@ -577,10 +577,10 @@
   resolved "https://registry.yarnpkg.com/@pothos/plugin-errors/-/plugin-errors-4.2.0.tgz#b6b7f7a53edf25d057461aada0c83e18c15212c8"
   integrity sha512-Yt87hn7z0+1bv7bhrJCD5GH9+NTO/5CJEkbebyM4scnnmQ0rpqyO/yViIirtzCXk/NKBHEiLrthL2frQxUmJ5w==
 
-"@pothos/plugin-federation@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@pothos/plugin-federation/-/plugin-federation-4.1.0.tgz#42a828c2481475e004b1a0862c648c39120323c6"
-  integrity sha512-5PEY/BNA0Ttouhrc2s62GDiMpTRDviXv4L3YG5CtdT96X2DJb2jZroJT5rhNgH8ww001KbJ6lVle7eid1ySHKA==
+"@pothos/plugin-federation@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-federation/-/plugin-federation-4.2.0.tgz#8c0a0757533948d29a7b36052346d7dfeed9d661"
+  integrity sha512-e3mLRxtqvDYTkbKxiVjleWEvbHiilBoN2OoKpVpJIpIOSxo2kmwO3bQBqouaDedSaAZluBSPIH79zYQ9pMg84Q==
 
 "@pothos/plugin-prisma@^4.3.1":
   version "4.3.1"
@@ -594,15 +594,20 @@
   resolved "https://registry.yarnpkg.com/@pothos/plugin-relay/-/plugin-relay-4.3.0.tgz#b4ddbfcb145f3c41abe7354dddb9be622bc9e3a4"
   integrity sha512-sa8PWNQJLSNf7AVY43T3rSq4EnspuAcrPWcH3mCyocaqKzCqZA8DOdJ0tTWeGCJp1lsWkKFSrdb81g9FVJGTIg==
 
+"@pothos/plugin-scope-auth@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-scope-auth/-/plugin-scope-auth-4.1.0.tgz#cf58e436eb5995f9ef6cef0f2a898a9d02aaf659"
+  integrity sha512-xSMV7xHZAahGmtYEoibjBgJ7Y6v6GSALOt3ZS2lZMaPKuoPFf9uz4r8N0ecz2lopwHH1u88f7thN+kgurqUvtw==
+
 "@pothos/plugin-simple-objects@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@pothos/plugin-simple-objects/-/plugin-simple-objects-4.1.0.tgz#05014db96f84641fce3e55e1165a68a15e619873"
   integrity sha512-R4u3Hnd6btWt1XHG3bgBa463XbDgH380GRWg88FMrDfoqqkB1EI02gsWgmASqHHJgFI35V9Tc62loGy2XpTUyA==
 
-"@pothos/plugin-zod@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@pothos/plugin-zod/-/plugin-zod-4.1.0.tgz#23b2de45f9c228514b1400a7b98f928226d769aa"
-  integrity sha512-KNAFllvYTZimY+rjELNRRUNVyN2zhZ0jIGsTDb9QVYZ8c5EBT3tHjuImu7t12GHnOAkuTimCEk/VngyMUQpEyw==
+"@pothos/plugin-sub-graph@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-sub-graph/-/plugin-sub-graph-4.2.0.tgz#5577ac39b1e6db30e856a26dbad8f0bc1af00dd7"
+  integrity sha512-HlMYgq9BeoC92oKyg5zVy60X4smPfg0urBbFKcgxRJMtDN265arac+nSc29oaxGPBhkj+X/cEv39UdXFJ4Vbog==
 
 "@prisma/debug@5.21.1":
   version "5.21.1"
