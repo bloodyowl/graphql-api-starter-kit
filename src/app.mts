@@ -9,22 +9,16 @@ import {
   type RequestContext,
 } from "#app/utils/context.mts";
 import { createFeaturesFlags } from "#app/utils/featureFlags.mts";
+import { createYoga, type YogaLogger } from "graphql-yoga";
 
 import { identityEvents } from "#app/events/consumers/identityEvents.mts";
 import { type Kafka } from "#app/events/events.mts";
 import { schema, subGraphsSchemas } from "#app/graphql/schema.mts";
 import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
-import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginInlineTrace } from "@apollo/server/plugin/inlineTrace";
-import {
-  fastifyApolloDrainPlugin,
-  fastifyApolloHandler,
-  type ApolloFastifyContextFunction,
-} from "@as-integrations/fastify";
 import fastifyCors from "@fastify/cors";
 import { Option } from "@swan-io/boxed";
 import { randomUUID } from "crypto";
-import fastify, { type FastifyRequest } from "fastify";
+import fastify, { type FastifyReply, type FastifyRequest } from "fastify";
 import { match, P } from "ts-pattern";
 import packageJson from "../package.json" with { type: "json" };
 
@@ -141,77 +135,94 @@ export const start = async <K extends Kafka>(
     });
   });
 
+  const logging: YogaLogger = {
+    debug: (...args) => {
+      const log = loggerAsyncLocalStorage.getStore() ?? app.log;
+      args.forEach(arg => log.debug(arg));
+    },
+    info: (...args) => {
+      const log = loggerAsyncLocalStorage.getStore() ?? app.log;
+      args.forEach(arg => log.info(arg));
+    },
+    warn: (...args) => {
+      const log = loggerAsyncLocalStorage.getStore() ?? app.log;
+      args.forEach(arg => log.warn(arg));
+    },
+    error: (...args) => {
+      const log = loggerAsyncLocalStorage.getStore() ?? app.log;
+      args.forEach(arg => log.error(arg));
+    },
+  };
+
   if (env.NODE_ENV === "development") {
-    const testingApi = new ApolloServer<RequestContext>({
-      schema: schema,
-      plugins: [
-        fastifyApolloDrainPlugin(app),
-        ApolloServerPluginInlineTrace({
-          includeErrors: { transform: err => err },
-        }),
-      ],
-    });
-
-    await testingApi.start();
-
-    const getContext: ApolloFastifyContextFunction<
-      RequestContext
-    > = async request => {
-      return request.context;
-    };
-
-    const handler = fastifyApolloHandler(testingApi, {
-      context: getContext,
+    const localApi = createYoga<{
+      req: FastifyRequest;
+      reply: FastifyReply;
+    }>({
+      schema,
+      graphqlEndpoint: "/graphql",
+      logging,
     });
 
     app.route({
-      url: "/graphql",
+      url: localApi.graphqlEndpoint,
       method: ["GET", "POST", "OPTIONS"],
-      handler: (request, reply) => {
-        return loggerAsyncLocalStorage.run(request.log, () => {
-          // @ts-expect-error Generics don't match
-          return handler.call(app, request, reply);
+      handler: async (request, reply) => {
+        return loggerAsyncLocalStorage.run(request.log, async () => {
+          // Second parameter adds Fastify's `req` and `reply` to the GraphQL Context
+          const response = await localApi.handleNodeRequestAndResponse(
+            request,
+            reply,
+            {
+              req: request,
+              reply,
+            },
+          );
+          response.headers.forEach((value, key) => {
+            reply.header(key, value);
+          });
+          reply.status(response.status);
+          reply.send(response.body);
+          return reply;
         });
       },
     });
   }
 
-  await Promise.all(
-    subGraphsSchemas.map(async ({ pathname, schema }) => {
-      const api = new ApolloServer<RequestContext>({
-        schema,
-        plugins: [
-          fastifyApolloDrainPlugin(app),
-          ApolloServerPluginInlineTrace({
-            includeErrors: { transform: err => err },
-          }),
-        ],
-      });
+  subGraphsSchemas.forEach(({ pathname, schema }) => {
+    const api = createYoga<{
+      req: FastifyRequest;
+      reply: FastifyReply;
+    }>({
+      schema,
+      graphqlEndpoint: pathname,
+      logging,
+    });
 
-      await api.start();
-
-      const getContext: ApolloFastifyContextFunction<
-        RequestContext
-      > = async request => {
-        return request.context;
-      };
-
-      const handler = fastifyApolloHandler(api, {
-        context: getContext,
-      });
-
-      app.route({
-        url: pathname,
-        method: ["GET", "POST", "OPTIONS"],
-        handler: (request, reply) => {
-          return loggerAsyncLocalStorage.run(request.log, () => {
-            // @ts-expect-error Generics don't match
-            return handler.call(app, request, reply);
+    app.route({
+      url: api.graphqlEndpoint,
+      method: ["GET", "POST", "OPTIONS"],
+      handler: async (request, reply) => {
+        return loggerAsyncLocalStorage.run(request.log, async () => {
+          // Second parameter adds Fastify's `req` and `reply` to the GraphQL Context
+          const response = await api.handleNodeRequestAndResponse(
+            request,
+            reply,
+            {
+              req: request,
+              reply,
+            },
+          );
+          response.headers.forEach((value, key) => {
+            reply.header(key, value);
           });
-        },
-      });
-    }),
-  );
+          reply.status(response.status);
+          reply.send(response.body);
+          return reply;
+        });
+      },
+    });
+  });
 
   kafka.subscribe("identityEvents", identityEvents);
 
