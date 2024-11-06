@@ -22,6 +22,7 @@ import { randomUUID } from "crypto";
 import fastify, { type FastifyRequest } from "fastify";
 import { match, P } from "ts-pattern";
 import packageJson from "../package.json" with { type: "json" };
+import { createTranslationHelper, getLocale } from "./i18n/i18n.mts";
 
 declare module "fastify" {
   export interface FastifyRequest {
@@ -92,6 +93,7 @@ export const start = async <K extends Kafka>(
     log: app.log,
     featureFlags: createFeaturesFlags({}),
     partnerClient: createPartnerClient(),
+    t: createTranslationHelper("en"),
 
     // client context
     filterAccountMembership,
@@ -121,7 +123,7 @@ export const start = async <K extends Kafka>(
           .otherwise(() => null),
         ip: request.ip,
       }),
-
+      t: createTranslationHelper(getLocale(request.headers["accept-language"])),
       // client context
       filterAccountMembership,
       ...clientsContext,

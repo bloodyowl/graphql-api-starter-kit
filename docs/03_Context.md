@@ -14,6 +14,7 @@ Provides:
 - `log`: Fastify logger;
 - `featureFlags`: Feature flags
 - `partnerClient`: GQL client for the partner API
+- `t`: Translator
 
 ## EventContext
 
@@ -24,6 +25,7 @@ Provides:
 - `log`: Fastify logger;
 - `featureFlags`: Feature flags
 - `partnerClient`: GQL client for the partner API
+- `t`: Translator
 
 ## Recipes
 

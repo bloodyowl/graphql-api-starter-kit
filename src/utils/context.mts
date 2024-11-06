@@ -1,6 +1,8 @@
 import { type PartnerClient } from "#app/clients/partner/partner.mts";
 import { type filterAccountMembership } from "#app/clients/partner/queries/filterAccountMembership.mts";
 import { type Kafka } from "#app/events/events.mts";
+import { type Translator } from "#app/i18n/i18n.mts";
+import { type Auth } from "#app/utils/auth.mts";
 import { type FeatureFlags } from "#app/utils/featureFlags.mts";
 import { type DB } from "#types/db/db.mts";
 import {
@@ -9,7 +11,6 @@ import {
   type FastifyRequest,
 } from "fastify";
 import { type Kysely } from "kysely";
-import { type Auth } from "./auth.mts";
 
 export type Db = Kysely<DB>;
 
@@ -30,6 +31,7 @@ export type RequestContext = GlobalContext &
     log: FastifyBaseLogger;
     featureFlags: FeatureFlags;
     partnerClient: PartnerClient;
+    t: Translator;
   };
 
 export type AuthenticatedRequestContext<AllowedAuth = Auth> = RequestContext & {
@@ -41,4 +43,5 @@ export type EventContext = GlobalContext &
     log: FastifyBaseLogger;
     featureFlags: FeatureFlags;
     partnerClient: PartnerClient;
+    t: Translator;
   };

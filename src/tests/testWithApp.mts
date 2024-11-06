@@ -10,6 +10,7 @@ import { type DB } from "#types/db/db.mts";
 
 import type { introspection } from "#types/graphql/schema-env.d.ts";
 
+import { createTranslationHelper, type Translator } from "#app/i18n/i18n.mts";
 import { Future, Result } from "@swan-io/boxed";
 import { initGraphQLTada, type TadaDocumentNode } from "gql.tada";
 import { type GraphQLError, print } from "graphql";
@@ -43,6 +44,7 @@ const migration = fs.readFileSync(
 export const testWithApp = (
   name: string,
   func: (config: {
+    t: Translator;
     db: Kysely<DB>;
     kafka: Kafka & TestKafka;
     clientsContext: Partial<ClientsContext>;
@@ -72,10 +74,13 @@ export const testWithApp = (
       clientsContext,
     );
 
+    const t = createTranslationHelper("en");
+
     await func({
       db,
       clientsContext,
       kafka,
+      t,
       partner: {
         graphql: partnerGraphql,
         run: <Data, Variables>(

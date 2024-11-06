@@ -12,7 +12,7 @@ suite("registerTest", async () => {
 
   testWithApp(
     "registerPet requires auth",
-    async ({ partner: { graphql, run } }) => {
+    async ({ partner: { graphql, run }, t }) => {
       const registration = await run(
         graphql(`
           mutation registerPet($input: RegisterPetInput!) {
@@ -35,6 +35,10 @@ suite("registerTest", async () => {
       );
 
       assertEqual(registration.registerPet.__typename, "UnauthorizedRejection");
+      assertEqual(
+        registration.registerPet.message,
+        t("rejection.UnauthorizedRejection"),
+      );
     },
   );
 

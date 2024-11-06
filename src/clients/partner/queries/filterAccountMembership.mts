@@ -1,5 +1,6 @@
 import { type PartnerClient, graphql } from "#app/clients/partner/partner.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
+import { type Translator } from "#app/i18n/i18n.mts";
 import { Option, Result } from "@swan-io/boxed";
 import { match } from "ts-pattern";
 
@@ -48,13 +49,16 @@ export const filterAccountMembership = <
     permissions: RequiredPermissions;
     statuses: AcceptedStatuses;
   },
+  { t }: { t: Translator },
 ) => {
   return client
     .run(query, { accountId })
     .mapOkToResult(data =>
       Option.fromNullable(data.accountMemberships.edges.at(0))
         .map(edge => edge.node)
-        .toResult(new UnauthorizedRejection("Unauthorized")),
+        .toResult(
+          new UnauthorizedRejection(t("rejection.UnauthorizedRejection")),
+        ),
     )
     .mapOkToResult(accountMembership => {
       return match(accountMembership)
@@ -69,12 +73,16 @@ export const filterAccountMembership = <
           node => Result.Ok(node),
         )
         .otherwise(() =>
-          Result.Error(new UnauthorizedRejection("Unauthorized")),
+          Result.Error(
+            new UnauthorizedRejection(t("rejection.UnauthorizedRejection")),
+          ),
         );
     })
     .mapOkToResult(node =>
       Option.fromPredicate(node, node =>
         statuses.includes(node.statusInfo.status),
-      ).toResult(new UnauthorizedRejection("Invalid status")),
+      ).toResult(
+        new UnauthorizedRejection(t("rejection.UnauthorizedRejection")),
+      ),
     );
 };

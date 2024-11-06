@@ -92,7 +92,8 @@ export const builder = new SchemaBuilder<{
   },
   scopeAuth: {
     treatErrorsAsUnauthorized: true,
-    unauthorizedError: () => new UnauthorizedRejection("Unauthorized"),
+    unauthorizedError: (parent, context) =>
+      new UnauthorizedRejection(context.t("rejection.UnauthorizedRejection")),
     authScopes: context => {
       const auth = context.auth;
       return {
