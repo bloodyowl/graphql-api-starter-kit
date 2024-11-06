@@ -25,11 +25,12 @@ model Outbox {
 }
 
 model Pet {
-  id        String   @id
-  ownerId   String
-  type      String
-  createdAt DateTime
-  updatedAt DateTime
+  id          String   @id
+  ownerId     String
+  type        String
+  description String?
+  createdAt   DateTime
+  updatedAt   DateTime
 
   @@index([ownerId], name: "Pet_ownerId_idx")
 }
