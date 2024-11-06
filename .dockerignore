@@ -1,0 +1,5 @@
+/.github/
+/.hooks/
+/.dist/
+/.docs/
+/node_modules/
