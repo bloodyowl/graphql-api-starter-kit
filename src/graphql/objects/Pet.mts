@@ -18,6 +18,7 @@ const petSchema = {
   id: P.string,
   type: petTypes.P,
   ownerId: P.string,
+  description: P.union(P.string, P.nullish),
   createdAt: P.instanceOf(Date),
   updatedAt: P.instanceOf(Date),
 };
@@ -55,5 +56,6 @@ export const PetRef = builder.loadableObject(Pet, {
       nullable: false,
       subGraphs: ["internal"],
     }),
+    description: t.exposeString("description"),
   }),
 });

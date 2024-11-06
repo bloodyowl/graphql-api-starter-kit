@@ -28,6 +28,7 @@ type PageInfo {
 type Pet {
   id: ID!
   type: PetType!
+  description: String
 }
 
 type PetConnection {
@@ -52,6 +53,7 @@ type Query {
 }
 
 input RegisterPetInput {
+  description: String
   type: PetType!
 }
 

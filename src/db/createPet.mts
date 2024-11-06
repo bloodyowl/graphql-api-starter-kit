@@ -7,16 +7,24 @@ type Input = {
   id: string;
   type: PetType;
   userId: string;
+  description: string | undefined;
 };
 
-export const createPet = ({ id, type, userId }: Input, db: Db) => {
+export const createPet = ({ id, type, userId, description }: Input, db: Db) => {
   const createdAt = new Date().toISOString();
 
   return Future.fromPromise(
     db.transaction().execute(async trx => {
       const pet = trx
         .insertInto("Pet")
-        .values({ id, type, ownerId: userId, createdAt, updatedAt: createdAt })
+        .values({
+          id,
+          type,
+          ownerId: userId,
+          createdAt,
+          updatedAt: createdAt,
+          description,
+        })
         .returningAll()
         .executeTakeFirst();
 

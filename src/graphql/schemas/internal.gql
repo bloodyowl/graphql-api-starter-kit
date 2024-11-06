@@ -29,6 +29,7 @@ type Pet {
   id: ID!
   type: PetType!
   ownerId: ID!
+  description: String
 }
 
 type PetConnection {
@@ -60,6 +61,7 @@ type Query {
 }
 
 input RegisterPetInput {
+  description: String
   type: PetType!
 }
 
