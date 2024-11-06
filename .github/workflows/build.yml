@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: yarn --pure-lockfile
 
+      - name: Codegen
+        run: yarn codegen
+
       - name: Typecheck
         run: yarn typecheck
 
