@@ -38,7 +38,7 @@ jobs:
       - name: Check for partner API breaking changes
         uses: kamilkisiela/graphql-inspector@master
         with:
-          schema: "main:src/graphql//schemas/partner.gql"
+          schema: "main:src/graphql/schemas/partner.gql"
           github-token: ${{ github.token }}
 
       - name: Check for internal API breaking changes

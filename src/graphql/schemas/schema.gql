@@ -12,10 +12,6 @@ type Mutation {
   registerPet(input: RegisterPetInput!): RegisterPetPayload!
 }
 
-type NotFoundRejection implements Rejection {
-  message: String!
-}
-
 type PageInfo {
   endCursor: String
   hasNextPage: Boolean!

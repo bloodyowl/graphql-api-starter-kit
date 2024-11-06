@@ -7,14 +7,12 @@ import RelayPlugin from "@pothos/plugin-relay";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import SubGraphPlugin from "@pothos/plugin-sub-graph";
 
-import { type Future, type Result } from "@swan-io/boxed";
+import { Dict, type Future, type Result } from "@swan-io/boxed";
 
 import { env } from "#app/env.mts";
-import { CannotRegisterPetRejection } from "#app/graphql/rejections/CannotRegisterPetRejection.mts";
-import { NotFoundRejection } from "#app/graphql/rejections/NotFoundRejection.mts";
 import { Rejection } from "#app/graphql/rejections/Rejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
-import { type SubGraph } from "#app/graphql/subGraphs.mts";
+import { subGraphs, type SubGraph } from "#app/graphql/subGraphs.mts";
 import {
   type Auth,
   type ProjectAuth,
@@ -59,6 +57,7 @@ export const builder = new SchemaBuilder<{
     FederationPlugin,
     SubGraphPlugin,
   ],
+  // Expose the connection types and builders
   relay: {
     nodeQueryOptions: false,
     nodesQueryOptions: false,
@@ -74,6 +73,7 @@ export const builder = new SchemaBuilder<{
       nullable: false,
     },
   },
+  // Handles unions automatically when fields can output rejections
   errors: {
     defaultTypes: [Error, ZodError],
     defaultResultOptions: {
@@ -84,7 +84,9 @@ export const builder = new SchemaBuilder<{
     },
   },
   subGraphs: {
-    defaultForTypes: ["internal", "partner"],
+    // Expose types in all subgraphs by default
+    // Note: they won't be included if not used
+    defaultForTypes: Dict.keys(subGraphs),
     fieldsInheritFromTypes: true,
     explicitlyIncludeType: type => hasResolvableKey(type),
   },
@@ -103,6 +105,7 @@ export const builder = new SchemaBuilder<{
   },
 });
 
+// Add the `totalCount` field to connections
 builder.globalConnectionFields(t => ({
   totalCount: t.int({
     nullable: false,
@@ -117,6 +120,7 @@ export const RejectionInterface = builder.interfaceType(Rejection, {
   }),
 });
 
+// Default error handler
 builder.objectType(Error, {
   name: "InternalErrorRejection",
   interfaces: [RejectionInterface],
@@ -131,6 +135,11 @@ builder.objectType(Error, {
       },
     }),
   }),
+});
+
+builder.objectType(UnauthorizedRejection, {
+  name: "UnauthorizedRejection",
+  interfaces: [RejectionInterface],
 });
 
 const flattenErrors = (
@@ -168,6 +177,7 @@ const ValidationFieldError = builder
     }),
   });
 
+// Default error handler for validation
 builder.objectType(ZodError, {
   name: "ValidationRejection",
   interfaces: [RejectionInterface],
@@ -181,19 +191,4 @@ builder.objectType(ZodError, {
       resolve: err => flattenErrors(err.format(), []),
     }),
   }),
-});
-
-builder.objectType(UnauthorizedRejection, {
-  name: "UnauthorizedRejection",
-  interfaces: [RejectionInterface],
-});
-
-builder.objectType(CannotRegisterPetRejection, {
-  name: "CannotRegisterPetRejection",
-  interfaces: [RejectionInterface],
-});
-
-builder.objectType(NotFoundRejection, {
-  name: "NotFoundRejection",
-  interfaces: [RejectionInterface],
 });

@@ -1,3 +1,4 @@
+import { builder, RejectionInterface } from "#app/graphql/builder.mts";
 import { Rejection } from "#app/graphql/rejections/Rejection.mts";
 
 export class CannotRegisterPetRejection extends Rejection {
@@ -7,3 +8,8 @@ export class CannotRegisterPetRejection extends Rejection {
     Object.setPrototypeOf(this, CannotRegisterPetRejection.prototype);
   }
 }
+
+builder.objectType(CannotRegisterPetRejection, {
+  name: "CannotRegisterPetRejection",
+  interfaces: [RejectionInterface],
+});

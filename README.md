@@ -48,7 +48,9 @@ $ yarn reset
 $ yarn dev
 ```
 
-You can then open `https://localhost:3000/partner` and try the Apollo Explorer.
+You can then open `https://localhost:3000/graphql` and try the explorer.
+
+You can preview all the subgraphs you expose (e.g. `https://localhost:3000/partner-graphql`, `https://localhost:3000/internal-graphql`).
 
 ## Run tests
 

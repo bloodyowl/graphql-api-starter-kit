@@ -1,3 +1,4 @@
+import { builder, RejectionInterface } from "#app/graphql/builder.mts";
 import { Rejection } from "#app/graphql/rejections/Rejection.mts";
 
 export class NotFoundRejection extends Rejection {
@@ -7,3 +8,8 @@ export class NotFoundRejection extends Rejection {
     Object.setPrototypeOf(this, NotFoundRejection.prototype);
   }
 }
+
+builder.objectType(NotFoundRejection, {
+  name: "NotFoundRejection",
+  interfaces: [RejectionInterface],
+});
