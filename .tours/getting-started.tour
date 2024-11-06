@@ -1,0 +1,312 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Getting started",
+  "steps": [
+    {
+      "file": "README.md",
+      "description": "👋 Welcome on the api-starter-kit tour!\n\nLet's have a look at the repository 👀",
+      "line": 1
+    },
+    {
+      "file": "README.md",
+      "description": "First, let's make sure that you follow the installation guide.",
+      "line": 5
+    },
+    {
+      "file": "README.md",
+      "description": "This step adds a pre-commit hook to make sure you push up-to-date GraphQL schemas.",
+      "line": 9
+    },
+    {
+      "file": "README.md",
+      "description": "Then, let's prepare the database types.\n\nThis step will generated the types based on the prisma schema you have in `prisma/schema.prisma`. It makes sure that all of your database queries are typesafe!",
+      "line": 17
+    },
+    {
+      "file": "README.md",
+      "description": "Start the local PostgreSQL database.",
+      "line": 25,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 28
+        },
+        "end": {
+          "line": 1,
+          "character": 36
+        }
+      }
+    },
+    {
+      "file": "README.md",
+      "description": "Migrate the local database to the current schema. If you have any trouble, you can run `yarn reset` and start from a fresh database.",
+      "line": 31
+    },
+    {
+      "file": "README.md",
+      "description": "And you're ready to start the development server!",
+      "line": 48
+    },
+    {
+      "file": "README.md",
+      "description": "You can also run the test suite using `yarn test`.\n\nIf you want a quick feedback loop, use the `yarn test-watch` command.",
+      "line": 58
+    },
+    {
+      "file": "prisma/schema.prisma",
+      "description": "Now, we're in the database schema 📋\n\nWe use Prisma only for specifying the model and run migrations. The actual queries will use Kysely, a query-builder, in order to benefit from the power of SQL.",
+      "line": 1
+    },
+    {
+      "file": "prisma/schema.prisma",
+      "description": "To define a table, just create a `model TableName {}` in this file.",
+      "line": 14
+    },
+    {
+      "file": "prisma/schema.prisma",
+      "description": "You can specify a primary key ID using the `@id` directive.",
+      "line": 15
+    },
+    {
+      "file": "prisma/schema.prisma",
+      "description": "And you can use the `@@index` syntax to define your indices.",
+      "line": 24
+    },
+    {
+      "file": "prisma/migrations/20241102192201_init/migration.sql",
+      "description": "When you run `yarn setup`, Prisma will create the associated migration to run. You can edit them if needed, but be careful.",
+      "line": 2,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 101
+        },
+        "end": {
+          "line": 1,
+          "character": 107
+        }
+      }
+    },
+    {
+      "file": "src/graphql/subGraphs.mts",
+      "description": "Now, let's check how we provide GraphQL APIs.\n\nWe can extend APIs on different federated schemas. Here, we specify that we want to expose an `internal` and a `partner` subgraph.",
+      "line": 1
+    },
+    {
+      "file": "src/graphql/query.mts",
+      "description": "By default, a field is exposed on all subgraphs.",
+      "line": 16
+    },
+    {
+      "file": "src/graphql/query.mts",
+      "description": "But we can specify that it only belongs to specific subgraphs.",
+      "line": 28
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "When we need to extend an object that's not owned by the current service (e.g. here, the `User` type that's owned by another subGraph), we define an `externalRef`, and specify the required key.",
+      "line": 12
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "We specify here on which subGraphs we wish to extend the type.",
+      "line": 18
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "Specify the fields we expect to receive.",
+      "line": 20
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "And we can then add fields on this object.",
+      "line": 25
+    },
+    {
+      "file": "src/graphql/query.mts",
+      "description": "We can add guard on the authentication, here, only `users` can run the query. ",
+      "line": 24
+    },
+    {
+      "file": "src/graphql/query.mts",
+      "description": "In this case, the `context` object type guarantees that we have a user auth. ",
+      "line": 34
+    },
+    {
+      "file": "src/graphql/queries/pets.mts",
+      "description": "Which means our resolver logic can have a fine-grained type. ",
+      "line": 20
+    },
+    {
+      "file": "src/graphql/mutation.mts",
+      "description": "On mutations, you can define the errors you want to treat as rejections.",
+      "line": 15
+    },
+    {
+      "file": "src/graphql/rejections/CannotRegisterPetRejection.mts",
+      "description": "For instance, we created the `CannotRegisterPetRejection` rejection, which extends `Rejection`, which itself extends `Error`.",
+      "line": 4
+    },
+    {
+      "file": "src/graphql/rejections/CannotRegisterPetRejection.mts",
+      "description": "And we register it in the schema builder, meaning that when the mutation encouters this error, it'll turn the error into a rejection if configured in the field.",
+      "line": 12
+    },
+    {
+      "file": "src/graphql/mutation.mts",
+      "description": "This bit states that if the resolver is succesful, we'll generate a `*SuccessPayload` with the `Pet` type in a `pet` field.",
+      "line": 17
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "Now, let's check a mutation resolver.",
+      "line": 26
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "We receive the input, which we derived the type from its GraphQL schema.",
+      "line": 27
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "We only accept a context with a logged user.",
+      "line": 28
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "We can validate the input using a Zod schema. Any validation error will be automatically turned into a `ValidationRejection`.",
+      "line": 36
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "The `createPet` here can resolve with a either a `Ok(pet)` or an `Error<DatabaseError | DatabaseParseError>`. \n\nIf the error isn't registered in the builder, it'll turn into an `InternalErrorRejection`.",
+      "line": 37
+    },
+    {
+      "file": "src/db/createPet.mts",
+      "description": "Here, we can see the database query, with transactions!",
+      "line": 16
+    },
+    {
+      "file": "src/graphql/objects/Pet.mts",
+      "description": "For performance, we have built-in dataloaders. Here, we're using `loadableObject`, with a `load` function.",
+      "line": 49
+    },
+    {
+      "file": "src/graphql/objects/Pet.mts",
+      "description": "If the object is already provided by the parent object (e.g. your insert & return from the database and already have the object), the loader doesn't run. If you provide only an `id`, the load will run and batch calls to the database.",
+      "line": 39
+    },
+    {
+      "file": "src/graphql/objects/PetConnection.mts",
+      "description": "We can define connections using `connectionObject`.",
+      "line": 4
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "The connection takes the default conncetion args (`first`, `last`, `after`, `before`, `limit`).",
+      "line": 30
+    },
+    {
+      "file": "src/graphql/objects/User.mts",
+      "description": "And it is dataloaded as well!",
+      "line": 33
+    },
+    {
+      "file": "src/graphql/queries/userPets.mts",
+      "description": "To expose a dataloaded `totalCount` (which can be costly in PostgreSQL), we give a `Lazy` value to make sure it only runs once per argument set.",
+      "line": 56
+    },
+    {
+      "file": "src/graphql/query.mts",
+      "description": "If we want to test extended external objects, we can define an empty `subGraphs` array to expose the type. That'll only end up in our local API.",
+      "line": 41
+    },
+    {
+      "file": "src/graphql/schemas/schema.gql",
+      "description": "These `gql` files are generated from the schema.\n\nHere, we have our local API (with an explorer accessible at `https://localhost:3000/graphql`).",
+      "line": 1
+    },
+    {
+      "file": "src/graphql/schemas/internal.gql",
+      "description": "Here, we have our internal subgraph schema (with an explorer accessible at `https://localhost:3000/internal-graphql`).",
+      "line": 3
+    },
+    {
+      "file": "src/graphql/schemas/partner.gql",
+      "description": "And last, we have our partner subgraph schema (with an explorer accessible at `https://localhost:3000/partner-graphql`).\n\nNotice that the extend for `User` is only present in this schema, because we only defined `partner` in its subgraphs.",
+      "line": 77
+    },
+    {
+      "file": "src/graphql/mutations/__tests__/registerPet.test.mts",
+      "description": "Now, to test our API, we can create a test suite.\n\nWe use `__tests__` directories to keep the tests close to the implementation they verify. ",
+      "line": 11
+    },
+    {
+      "file": "src/graphql/mutations/__tests__/registerPet.test.mts",
+      "description": "The `testWithApp` provides you with a fresh app context, with a clean DB mock (which you can query to assert).",
+      "line": 13
+    },
+    {
+      "file": "src/graphql/mutations/__tests__/registerPet.test.mts",
+      "description": "You can run your queries, which are typechecked against the current GraphQL schema.",
+      "line": 16
+    },
+    {
+      "file": "src/events/consumers/identityEvents.mts",
+      "description": "Now, let's picture that we need to listen to messages from Kafka.\n\nWe can create an event handler, that takes an `event` and a `context`.",
+      "line": 7
+    },
+    {
+      "file": "src/events/consumers/identityEvents.mts",
+      "description": "We can pattern match on the message.",
+      "line": 17
+    },
+    {
+      "file": "src/events/consumers/identityEvents.mts",
+      "description": "And act on it.",
+      "line": 23
+    },
+    {
+      "file": "src/events/consumers/identityEvents.mts",
+      "description": "We specify if the event was handled. ",
+      "line": 28
+    },
+    {
+      "file": "src/events/consumers/identityEvents.mts",
+      "description": "Or if it was ignored. This is pretty useful for debugging.",
+      "line": 30
+    },
+    {
+      "file": "src/events/consumers/__tests__/identityEvents.test.mts",
+      "description": "We can test event subscription using `testWithApp`.",
+      "line": 15
+    },
+    {
+      "file": "src/events/consumers/__tests__/identityEvents.test.mts",
+      "description": "We prepare the app by registering a pet.",
+      "line": 18
+    },
+    {
+      "file": "src/events/consumers/__tests__/identityEvents.test.mts",
+      "description": "Assert that it exists.",
+      "line": 60
+    },
+    {
+      "file": "src/events/consumers/__tests__/identityEvents.test.mts",
+      "description": "Simulate the reception the event.",
+      "line": 63
+    },
+    {
+      "file": "src/events/consumers/__tests__/identityEvents.test.mts",
+      "description": "And we can check that the effects have correctly ran!",
+      "line": 96
+    },
+    {
+      "file": "docs/01_GettingStarted.md",
+      "description": "That's pretty much it!\n\nIf you want to dig a bit more, this folder contains some documentation.\n\nEnjoy! 👋",
+      "line": 1
+    }
+  ],
+  "ref": "5c8cc57"
+}
