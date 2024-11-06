@@ -45,6 +45,7 @@ suite("registerTest", async () => {
   testWithApp(
     "registerPet can create a pet",
     async ({ partner: { graphql, run }, db }) => {
+      const description = crypto.randomUUID();
       const registration = await run(
         graphql(`
           mutation registerPet($input: RegisterPetInput!) {
@@ -54,6 +55,7 @@ suite("registerTest", async () => {
                 pet {
                   id
                   type
+                  description
                   ownerId
                 }
               }
@@ -63,7 +65,7 @@ suite("registerTest", async () => {
             }
           }
         `),
-        { input: { type: "Cat" } },
+        { input: { type: "Cat", description } },
         userToken,
       );
       assertEqual(
@@ -71,6 +73,7 @@ suite("registerTest", async () => {
         "RegisterPetSuccessPayload",
       );
       assertIsDefined(registration.registerPet.pet.id);
+      assertEqual(registration.registerPet.pet.description, description);
 
       const outbox = await db
         .selectFrom("Outbox")

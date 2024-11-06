@@ -10,6 +10,7 @@ import { z } from "zod";
 
 export const RegisterPetInput = builder.inputType("RegisterPetInput", {
   fields: t => ({
+    description: t.string({ required: false }),
     type: t.field({
       type: PetType,
       required: true,
@@ -20,6 +21,7 @@ export const RegisterPetInput = builder.inputType("RegisterPetInput", {
 type Input = GetInput<typeof RegisterPetInput>;
 
 const registerPetInputSchema = z.object({
+  description: z.optional(z.string().min(2).max(100)),
   type: z.enum(petTypes.array).exclude(["Giraffe"]),
 });
 
@@ -33,10 +35,11 @@ export const registerPet = (
 
   context.log.info(`registerPet (${id})`);
 
-  return validate(input, registerPetInputSchema).flatMapOk(({ type }) =>
-    createPet({ id, type, userId }, context.db)
-      .tapOk(({ type }) => PetCounter.inc({ type }))
-      .tapOk(() => context.log.info(`registerPet success (${id})`))
-      .tapError(error => context.log.warn(error, error.message)),
+  return validate(input, registerPetInputSchema).flatMapOk(
+    ({ type, description }) =>
+      createPet({ id, type, userId, description }, context.db)
+        .tapOk(({ type }) => PetCounter.inc({ type }))
+        .tapOk(() => context.log.info(`registerPet success (${id})`))
+        .tapError(error => context.log.warn(error, error.message)),
   );
 };

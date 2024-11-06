@@ -20,6 +20,7 @@ type PageInfo {
 }
 
 type Pet {
+  description: String
   id: ID!
   ownerId: ID!
   type: PetType!
@@ -56,6 +57,7 @@ type Query {
 }
 
 input RegisterPetInput {
+  description: String
   type: PetType!
 }
 
