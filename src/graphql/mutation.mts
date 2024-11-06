@@ -3,9 +3,9 @@ import {
   registerPet,
   RegisterPetInput,
 } from "#app/graphql/mutations/registerPet.mts";
+import { PetRef } from "#app/graphql/objects/Pet.mts";
 import { CannotRegisterPetRejection } from "#app/graphql/rejections/CannotRegisterPetRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
-import { PetRef } from "./objects/Pet.mts";
 
 builder.mutationType({
   fields: t => ({

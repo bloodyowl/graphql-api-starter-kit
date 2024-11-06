@@ -8,10 +8,6 @@
     "outDir": "dist",
     "rootDir": ".",
     "resolvePackageJsonImports": true,
-    "paths": {
-      "#app/*": ["./src/*"],
-      "#types/*": ["./types/*"]
-    },
     "typeRoots": ["#types", "node_modules/@types"],
 
     "allowImportingTsExtensions": true,

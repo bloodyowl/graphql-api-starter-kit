@@ -1,12 +1,12 @@
 import { builder } from "#app/graphql/builder.mts";
+import { PetType } from "#app/graphql/objects/Pet.mts";
+import { userPets, type UserPetArgs } from "#app/graphql/queries/userPets.mts";
 import {
   decodeArgs,
   encodeArgs,
   type EncodedArgs,
 } from "#app/utils/pagination.mts";
 import { Future, Result } from "@swan-io/boxed";
-import { userPets, type UserPetArgs } from "../queries/userPets.mts";
-import { PetType } from "./Pet.mts";
 import { PetConnection } from "./PetConnection.mts";
 
 export const User = builder.externalRef(
