@@ -27,7 +27,7 @@ model Outbox {
 model Pet {
   id          String   @id
   ownerId     String
-  type        String
+  type        String /// @kyselyType("Cat" | "Dog" | "Giraffe")
   description String?
   createdAt   DateTime
   updatedAt   DateTime

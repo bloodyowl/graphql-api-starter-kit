@@ -1,4 +1,4 @@
-import { fromDb, type PetType } from "#app/graphql/objects/Pet.mts";
+import { type PetType } from "#app/graphql/objects/Pet.mts";
 import { type Db } from "#app/utils/context.mts";
 import { DatabaseError } from "#app/utils/errors.mts";
 import { Future } from "@swan-io/boxed";
@@ -26,7 +26,7 @@ export const createPet = ({ id, type, userId, description }: Input, db: Db) => {
           description,
         })
         .returningAll()
-        .executeTakeFirst();
+        .executeTakeFirstOrThrow();
 
       const eventId = crypto.randomUUID();
       const outbox = trx
@@ -47,7 +47,5 @@ export const createPet = ({ id, type, userId, description }: Input, db: Db) => {
 
       return pet;
     }),
-  )
-    .mapError(err => new DatabaseError(err))
-    .mapOkToResult(fromDb);
+  ).mapError(err => new DatabaseError(err));
 };

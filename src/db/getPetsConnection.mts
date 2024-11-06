@@ -1,4 +1,4 @@
-import { fromDb, type PetType } from "#app/graphql/objects/Pet.mts";
+import { type PetType } from "#app/graphql/objects/Pet.mts";
 import { type Db } from "#app/utils/context.mts";
 import { DatabaseError } from "#app/utils/errors.mts";
 import {
@@ -6,7 +6,7 @@ import {
   toWhereClause,
 } from "#app/utils/pagination.mts";
 import { type ResolveCursorConnectionArgs } from "@pothos/plugin-relay";
-import { Array, Future } from "@swan-io/boxed";
+import { Future } from "@swan-io/boxed";
 
 type Filters = {
   types: PetType[];
@@ -56,9 +56,7 @@ export const getPetsConnection = (
       .orderBy(orderBy, inverted ? "desc" : "asc")
       .orderBy("id", inverted ? "desc" : "asc")
       .execute(),
-  )
-    .mapError(err => new DatabaseError(err))
-    .mapOk(pets => Array.filterMap(pets, pet => fromDb(pet).toOption()));
+  ).mapError(err => new DatabaseError(err));
 };
 
 export const countPets = ({ types, userId }: Filters, db: Db) => {
