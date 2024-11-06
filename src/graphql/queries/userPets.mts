@@ -1,6 +1,6 @@
 import { countPets, getPetsConnection } from "#app/db/getPetsConnection.mts";
 import { PetRef, petTypes, type PetType } from "#app/graphql/objects/Pet.mts";
-import { type ProjectAuth } from "#app/utils/auth.mts";
+import { type ProjectAuth, type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { DatabaseError } from "#app/utils/errors.mts";
 import { getCursorForOrderBy } from "#app/utils/pagination.mts";
@@ -18,11 +18,11 @@ export type UserPetArgs = DefaultConnectionArguments & {
 
 export const userPets = (
   args: UserPetArgs,
-  context: AuthenticatedRequestContext<ProjectAuth>,
+  context: AuthenticatedRequestContext<UserAuth | ProjectAuth>,
 ) => {
   const types = args.types ?? petTypes.array;
 
-  context.log.info(`pets (${types})`);
+  context.log.info(`userPets (types: {${types}})`);
 
   return Future.fromPromise(
     resolveCursorConnection(

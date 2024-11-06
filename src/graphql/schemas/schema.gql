@@ -56,6 +56,7 @@ type Query {
     types: [PetType!]
   ): PetConnection
   user(id: ID!): User
+  viewer: User
 }
 
 input RegisterPetInput {

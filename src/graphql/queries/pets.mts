@@ -22,7 +22,7 @@ export const pets = (
   const types = args.types ?? petTypes.array;
   const userId = context.auth.userId;
 
-  context.log.info(`pets (${types})`);
+  context.log.info(`pets (types: {${types}})`);
 
   return Future.fromPromise(
     resolveCursorConnection(

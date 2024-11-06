@@ -18,7 +18,7 @@ import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import fastifyCors from "@fastify/cors";
 import { Option } from "@swan-io/boxed";
 import { randomUUID } from "crypto";
-import fastify, { type FastifyReply, type FastifyRequest } from "fastify";
+import fastify, { type FastifyRequest } from "fastify";
 import { match, P } from "ts-pattern";
 import packageJson from "../package.json" with { type: "json" };
 
@@ -155,10 +155,7 @@ export const start = async <K extends Kafka>(
   };
 
   if (env.NODE_ENV === "development") {
-    const localApi = createYoga<{
-      req: FastifyRequest;
-      reply: FastifyReply;
-    }>({
+    const localApi = createYoga<RequestContext>({
       schema,
       graphqlEndpoint: "/graphql",
       logging,
@@ -169,14 +166,10 @@ export const start = async <K extends Kafka>(
       method: ["GET", "POST", "OPTIONS"],
       handler: async (request, reply) => {
         return loggerAsyncLocalStorage.run(request.log, async () => {
-          // Second parameter adds Fastify's `req` and `reply` to the GraphQL Context
           const response = await localApi.handleNodeRequestAndResponse(
             request,
             reply,
-            {
-              req: request,
-              reply,
-            },
+            request.context,
           );
           response.headers.forEach((value, key) => {
             reply.header(key, value);
@@ -190,10 +183,7 @@ export const start = async <K extends Kafka>(
   }
 
   subGraphsSchemas.forEach(({ pathname, schema }) => {
-    const api = createYoga<{
-      req: FastifyRequest;
-      reply: FastifyReply;
-    }>({
+    const api = createYoga<RequestContext>({
       schema,
       graphqlEndpoint: pathname,
       logging,
@@ -204,14 +194,10 @@ export const start = async <K extends Kafka>(
       method: ["GET", "POST", "OPTIONS"],
       handler: async (request, reply) => {
         return loggerAsyncLocalStorage.run(request.log, async () => {
-          // Second parameter adds Fastify's `req` and `reply` to the GraphQL Context
           const response = await api.handleNodeRequestAndResponse(
             request,
             reply,
-            {
-              req: request,
-              reply,
-            },
+            request.context,
           );
           response.headers.forEach((value, key) => {
             reply.header(key, value);

@@ -23,7 +23,7 @@ User.implement({
 });
 
 builder.objectField(User, "pets", t =>
-  t.withAuth({ project: true }).loadable({
+  t.withAuth({ $any: { project: true, user: true } }).loadable({
     type: PetConnection,
     nullable: false,
     args: {

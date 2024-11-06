@@ -45,5 +45,10 @@ builder.queryType({
       },
       resolve: (_, args) => ({ id: args.id }),
     }),
+    viewer: t.withAuth({ user: true }).field({
+      subGraphs: [], // Don't publish, this is only for testing purposes
+      type: User,
+      resolve: (_, args, context) => ({ id: context.auth.userId }),
+    }),
   }),
 });
