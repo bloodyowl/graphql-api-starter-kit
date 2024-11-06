@@ -36,6 +36,7 @@ suite("identity events", async () => {
         { input: { type: "Cat" } },
         userToken,
       );
+
       assertEqual(
         registration.registerPet.__typename,
         "RegisterPetSuccessPayload",

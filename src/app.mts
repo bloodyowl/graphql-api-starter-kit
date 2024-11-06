@@ -9,6 +9,7 @@ import {
   type RequestContext,
 } from "#app/utils/context.mts";
 import { createFeaturesFlags } from "#app/utils/featureFlags.mts";
+import { useGraphQlJit } from "@envelop/graphql-jit";
 import { createYoga, type YogaLogger } from "graphql-yoga";
 
 import { identityEvents } from "#app/events/consumers/identityEvents.mts";
@@ -159,6 +160,7 @@ export const start = async <K extends Kafka>(
       schema,
       graphqlEndpoint: "/graphql",
       logging,
+      plugins: [useGraphQlJit()],
     });
 
     app.route({
@@ -187,6 +189,7 @@ export const start = async <K extends Kafka>(
       schema,
       graphqlEndpoint: pathname,
       logging,
+      plugins: [useGraphQlJit()],
     });
 
     app.route({

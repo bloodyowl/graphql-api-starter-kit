@@ -33,6 +33,7 @@ suite("registerTest", async () => {
         `),
         { input: { type: "Dog" } },
       );
+
       assertEqual(registration.registerPet.__typename, "UnauthorizedRejection");
     },
   );
