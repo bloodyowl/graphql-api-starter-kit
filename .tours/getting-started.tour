@@ -160,27 +160,27 @@
     {
       "file": "src/graphql/mutations/registerPet.mts",
       "description": "Now, let's check a mutation resolver.",
-      "line": 26
-    },
-    {
-      "file": "src/graphql/mutations/registerPet.mts",
-      "description": "We receive the input, which we derived the type from its GraphQL schema.",
-      "line": 27
-    },
-    {
-      "file": "src/graphql/mutations/registerPet.mts",
-      "description": "We only accept a context with a logged user.",
       "line": 28
     },
     {
       "file": "src/graphql/mutations/registerPet.mts",
-      "description": "We can validate the input using a Zod schema. Any validation error will be automatically turned into a `ValidationRejection`.",
-      "line": 36
+      "description": "We receive the input, which we derived the type from its GraphQL schema.",
+      "line": 29
     },
     {
       "file": "src/graphql/mutations/registerPet.mts",
-      "description": "The `createPet` here can resolve with a either a `Ok(pet)` or an `Error<DatabaseError | DatabaseParseError>`. \n\nIf the error isn't registered in the builder, it'll turn into an `InternalErrorRejection`.",
-      "line": 37
+      "description": "We only accept a context with a logged user.",
+      "line": 30
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "We can validate the input using a Zod schema. Any validation error will be automatically turned into a `ValidationRejection`.",
+      "line": 38
+    },
+    {
+      "file": "src/graphql/mutations/registerPet.mts",
+      "description": "The `createPet` here can resolve with a either a `Ok(pet)` or an `Error<DatabaseError>`. \n\nIf the error isn't registered in the builder, it'll turn into an `InternalErrorRejection`.",
+      "line": 40
     },
     {
       "file": "src/db/createPet.mts",
@@ -190,12 +190,12 @@
     {
       "file": "src/graphql/objects/Pet.mts",
       "description": "For performance, we have built-in dataloaders. Here, we're using `loadableObject`, with a `load` function.",
-      "line": 49
+      "line": 33
     },
     {
       "file": "src/graphql/objects/Pet.mts",
       "description": "If the object is already provided by the parent object (e.g. your insert & return from the database and already have the object), the loader doesn't run. If you provide only an `id`, the load will run and batch calls to the database.",
-      "line": 39
+      "line": 34
     },
     {
       "file": "src/graphql/objects/PetConnection.mts",
@@ -308,5 +308,5 @@
       "line": 1
     }
   ],
-  "ref": "5c8cc57"
+  "ref": "b836c24"
 }

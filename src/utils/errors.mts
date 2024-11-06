@@ -27,14 +27,6 @@ export class KafkaError extends Error {
   }
 }
 
-export class DatabaseParseError extends Error {
-  name = "DatabaseParseError";
-  constructor() {
-    super("DatabaseParseError");
-    Object.setPrototypeOf(this, DatabaseError.prototype);
-  }
-}
-
 export class BadStatusError extends Error {
   name = "BadStatusError";
   status: number;
