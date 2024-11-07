@@ -7,7 +7,7 @@ import {
 
 import { suite } from "node:test";
 
-suite("registerTest", async () => {
+suite("registerPet", async () => {
   const userToken = createUserToken({ userId: crypto.randomUUID() });
 
   testWithApp(
@@ -57,6 +57,9 @@ suite("registerTest", async () => {
                   type
                   description
                   ownerId
+                  statusInfo {
+                    status
+                  }
                 }
               }
               ... on Rejection {
@@ -74,6 +77,7 @@ suite("registerTest", async () => {
       );
       assertIsDefined(registration.registerPet.pet.id);
       assertEqual(registration.registerPet.pet.description, description);
+      assertEqual(registration.registerPet.pet.statusInfo.status, "Active");
 
       const outbox = await db
         .selectFrom("Outbox")

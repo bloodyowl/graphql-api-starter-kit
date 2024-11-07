@@ -1,10 +1,16 @@
 import { getPetById } from "#app/db/getPetById.mts";
 import { builder } from "#app/graphql/builder.mts";
+import {
+  PetActiveStatusInfo,
+  PetStatusInfoInterface,
+  PetSuspendedStatusInfo,
+} from "#app/graphql/objects/PetStatusInfo.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { deriveUnion } from "#app/utils/types.mts";
 import { type Pet as PetTable, PetType } from "#types/db/db.mts";
 import { Future } from "@swan-io/boxed";
 import { type Selectable } from "kysely";
+import { match } from "ts-pattern";
 
 type Pet = Selectable<PetTable>;
 
@@ -36,5 +42,21 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
       subGraphs: ["internal"],
     }),
     description: t.exposeString("description"),
+    statusInfo: t.field({
+      type: PetStatusInfoInterface,
+      nullable: false,
+      resolve: parent =>
+        match(parent)
+          .with(
+            { status: "Active" },
+            ({ status }) => new PetActiveStatusInfo({ status }),
+          )
+          .with(
+            { status: "Suspended" },
+            ({ status, suspensionReason }) =>
+              new PetSuspendedStatusInfo({ status, suspensionReason }),
+          )
+          .exhaustive(),
+    }),
   }),
 });

@@ -21,6 +21,7 @@ export const createPet = ({ id, type, userId, description }: Input, db: Db) => {
           id,
           type,
           ownerId: userId,
+          status: "Active",
           createdAt,
           updatedAt: createdAt,
           description,

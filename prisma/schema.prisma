@@ -30,6 +30,11 @@ enum PetType {
   Giraffe
 }
 
+enum PetStatus {
+  Active
+  Suspended
+}
+
 model Pet {
   id          String   @id
   ownerId     String
@@ -37,6 +42,9 @@ model Pet {
   description String?
   createdAt   DateTime
   updatedAt   DateTime
+
+  status           PetStatus @default(Active)
+  suspensionReason String?
 
   @@index([ownerId], name: "Pet_ownerId_idx")
 }
