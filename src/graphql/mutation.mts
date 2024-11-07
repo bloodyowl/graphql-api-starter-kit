@@ -9,6 +9,7 @@ import {
 } from "#app/graphql/mutations/suspendPet.mts";
 import { PetRef } from "#app/graphql/objects/Pet.mts";
 import { CannotRegisterPetRejection } from "#app/graphql/rejections/CannotRegisterPetRejection.mts";
+import { PetAlreadySuspendedRejection } from "#app/graphql/rejections/PetAlreadySuspendedRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
 
 builder.mutationType({
@@ -36,7 +37,7 @@ builder.mutationType({
       nullable: false,
       subGraphs: ["partner"],
       errors: {
-        types: [UnauthorizedRejection],
+        types: [UnauthorizedRejection, PetAlreadySuspendedRejection],
         dataField: {
           name: "pet",
         },

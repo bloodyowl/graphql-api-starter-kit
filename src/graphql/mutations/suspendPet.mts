@@ -1,12 +1,13 @@
 import { getPetById } from "#app/db/getPetById.mts";
 import { suspendPetById } from "#app/db/suspendPetById.mts";
 import { builder } from "#app/graphql/builder.mts";
+import { PetAlreadySuspendedRejection } from "#app/graphql/rejections/PetAlreadySuspendedRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { type GetInput } from "#app/utils/types.mts";
 import { validate } from "#app/utils/validation.mts";
-import { Future, Result } from "@swan-io/boxed";
+import { Future, Option, Result } from "@swan-io/boxed";
 import { z } from "zod";
 
 export const SuspendPetInput = builder.inputType("SuspendPetInput", {
@@ -35,6 +36,16 @@ export const suspendPet = (
     pet: getUserPetById(input.id, context),
   })
     .map(Result.allFromDict)
+    .mapOkToResult(values =>
+      Option.fromPredicate(
+        values,
+        ({ pet }) => pet.status !== "Suspended",
+      ).toResult(
+        new PetAlreadySuspendedRejection(
+          context.t("rejection.PetAlreadySuspendedRejection"),
+        ),
+      ),
+    )
     .flatMapOk(({ input: { suspensionReason }, pet: { id } }) =>
       suspendPetById({ id, suspensionReason }, context.db),
     )
@@ -47,11 +58,10 @@ const getUserPetById = (
   context: AuthenticatedRequestContext<UserAuth>,
 ) =>
   getPetById({ id }, context.db).mapOkToResult(pet =>
-    pet.ownerId === context.auth.userId
-      ? Result.Ok(pet)
-      : Result.Error(
-          new UnauthorizedRejection(
-            context.t("rejection.UnauthorizedRejection"),
-          ),
-        ),
+    Option.fromPredicate(
+      pet,
+      pet => pet.ownerId === context.auth.userId,
+    ).toResult(
+      new UnauthorizedRejection(context.t("rejection.UnauthorizedRejection")),
+    ),
   );

@@ -1,3 +1,4 @@
 {
-  "rejection.UnauthorizedRejection": "Unauthorized"
+  "rejection.UnauthorizedRejection": "Unauthorized",
+  "rejection.PetAlreadySuspendedRejection": "Pet is already suspended"
 }

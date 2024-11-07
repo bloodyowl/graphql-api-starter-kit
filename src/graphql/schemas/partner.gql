@@ -37,6 +37,10 @@ type PetActiveStatusInfo implements PetStatusInfo {
   status: PetStatus!
 }
 
+type PetAlreadySuspendedRejection implements Rejection {
+  message: String!
+}
+
 type PetConnection {
   pageInfo: PageInfo!
   edges: [PetEdge!]!
@@ -99,6 +103,7 @@ input SuspendPetInput {
 
 union SuspendPetPayload =
   | UnauthorizedRejection
+  | PetAlreadySuspendedRejection
   | ValidationRejection
   | InternalErrorRejection
   | SuspendPetSuccessPayload
