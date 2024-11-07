@@ -247,7 +247,7 @@ suite("suspendPet", async () => {
 
       assertEqual(
         suspensionAfterSuspension.suspendPet.__typename,
-        "PetAlreadySuspendedRejection",
+        "PetSuspendInvalidStatusRejection",
       );
     },
   );

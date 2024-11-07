@@ -1,4 +1,4 @@
 {
   "rejection.UnauthorizedRejection": "Unauthorized",
-  "rejection.PetAlreadySuspendedRejection": "Pet is already suspended"
+  "rejection.PetSuspendWrongStatusRejection": "Pet isn't in active status"
 }

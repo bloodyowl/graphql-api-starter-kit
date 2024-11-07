@@ -7,7 +7,7 @@ type Status = T["status"];
 type WithStatus<S extends Status> = T & { status: S };
 
 export const toSuspendedPet = (
-  pet: WithStatus<Exclude<Status, "Suspended">>,
+  pet: WithStatus<"Active">,
   { suspensionReason }: { suspensionReason: string | null },
 ): WithStatus<"Suspended"> => ({
   ...pet,

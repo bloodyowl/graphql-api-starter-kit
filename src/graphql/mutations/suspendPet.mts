@@ -1,14 +1,14 @@
 import { getPetById } from "#app/db/getPetById.mts";
 import { updatePet } from "#app/db/updatePet.mts";
 import { builder } from "#app/graphql/builder.mts";
-import { PetAlreadySuspendedRejection } from "#app/graphql/rejections/PetAlreadySuspendedRejection.mts";
+import { PetSuspendInvalidStatusRejection } from "#app/graphql/rejections/PetSuspendInvalidStatusRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
 import { toSuspendedPet } from "#app/records/Pet.ts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { validate } from "#app/utils/validation.mts";
 import { Future, Option, Result } from "@swan-io/boxed";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 import { z } from "zod";
 
 export const SuspendPetInput = builder.inputType("SuspendPetInput", {
@@ -39,11 +39,11 @@ export const suspendPet = (
 
   const suspendablePet = getUserPetById(input.id, context).mapOkToResult(pet =>
     match(pet)
-      .with({ status: P.not("Suspended") }, pet => Result.Ok(pet))
+      .with({ status: "Active" }, pet => Result.Ok(pet))
       .otherwise(() =>
         Result.Error(
-          new PetAlreadySuspendedRejection(
-            context.t("rejection.PetAlreadySuspendedRejection"),
+          new PetSuspendInvalidStatusRejection(
+            context.t("rejection.PetSuspendWrongStatusRejection"),
           ),
         ),
       ),
