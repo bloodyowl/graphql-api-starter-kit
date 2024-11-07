@@ -1,8 +1,9 @@
 import { getPetById } from "#app/db/getPetById.mts";
-import { suspendPetById } from "#app/db/suspendPetById.mts";
+import { updatePet } from "#app/db/updatePet.mts";
 import { builder } from "#app/graphql/builder.mts";
 import { PetAlreadySuspendedRejection } from "#app/graphql/rejections/PetAlreadySuspendedRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
+import { toSuspendedPet } from "#app/records/Pet.ts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { validate } from "#app/utils/validation.mts";
@@ -20,7 +21,12 @@ export const SuspendPetInput = builder.inputType("SuspendPetInput", {
 type Input = typeof SuspendPetInput.$inferInput;
 
 const supendPetInputSchema = z.object({
-  suspensionReason: z.optional(z.string().min(2).max(100)),
+  suspensionReason: z
+    .string()
+    .min(2)
+    .max(100)
+    .nullish()
+    .transform(x => x ?? null),
 });
 
 export const suspendPet = (
@@ -48,8 +54,8 @@ export const suspendPet = (
     suspendablePet,
   })
     .map(Result.allFromDict)
-    .flatMapOk(({ input: { suspensionReason }, suspendablePet: { id } }) =>
-      suspendPetById({ id, suspensionReason }, context.db),
+    .flatMapOk(({ input: { suspensionReason }, suspendablePet: pet }) =>
+      updatePet(toSuspendedPet(pet, { suspensionReason }), context.db),
     )
     .tapOk(() => context.log.info(`suspendPet success (${id})`))
     .tapError(error => context.log.warn(error, error.message));
