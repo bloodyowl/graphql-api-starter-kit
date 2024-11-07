@@ -7,6 +7,7 @@ import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { validate } from "#app/utils/validation.mts";
 import { Future, Option, Result } from "@swan-io/boxed";
+import { match, P } from "ts-pattern";
 import { z } from "zod";
 
 export const SuspendPetInput = builder.inputType("SuspendPetInput", {
@@ -30,22 +31,24 @@ export const suspendPet = (
 
   context.log.info(`suspendPet (${id})`);
 
-  return Future.allFromDict({
-    input: validate(input, supendPetInputSchema),
-    pet: getUserPetById(input.id, context),
-  })
-    .map(Result.allFromDict)
-    .mapOkToResult(values =>
-      Option.fromPredicate(
-        values,
-        ({ pet }) => pet.status !== "Suspended",
-      ).toResult(
-        new PetAlreadySuspendedRejection(
-          context.t("rejection.PetAlreadySuspendedRejection"),
+  const suspendablePet = getUserPetById(input.id, context).mapOkToResult(pet =>
+    match(pet)
+      .with({ status: P.not("Suspended") }, pet => Result.Ok(pet))
+      .otherwise(() =>
+        Result.Error(
+          new PetAlreadySuspendedRejection(
+            context.t("rejection.PetAlreadySuspendedRejection"),
+          ),
         ),
       ),
-    )
-    .flatMapOk(({ input: { suspensionReason }, pet: { id } }) =>
+  );
+
+  return Future.allFromDict({
+    input: validate(input, supendPetInputSchema),
+    suspendablePet,
+  })
+    .map(Result.allFromDict)
+    .flatMapOk(({ input: { suspensionReason }, suspendablePet: { id } }) =>
       suspendPetById({ id, suspensionReason }, context.db),
     )
     .tapOk(() => context.log.info(`suspendPet success (${id})`))
