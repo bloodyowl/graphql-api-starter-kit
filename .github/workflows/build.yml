@@ -49,3 +49,18 @@ jobs:
         with:
           schema: "main:src/graphql/schemas/internal.gql"
           github-token: ${{ github.token }}
+
+      - name: Install Rover
+        run: |
+          curl -sSL https://rover.apollo.dev/nix/v0.26.2 | sh
+          echo "$HOME/.rover/bin" >> $GITHUB_PATH
+
+      - name: Push partner to federation
+        run: rover subgraph publish test-o7a8t@current --schema=src/graphql/schemas/partner.gql --name partner --routing-url http://products.prod.svc.cluster.local:4001/graphql
+        env:
+          APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
+
+      - name: Push internal to federation
+        run: rover subgraph publish test-o7a8t@current --schema=src/graphql/schemas/internal.gql --name internal --routing-url http://products.prod.svc.cluster.local:4001/graphql
+        env:
+          APOLLO_KEY: ${{ secrets.APOLLO_KEY }}

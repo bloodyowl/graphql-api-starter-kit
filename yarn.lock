@@ -2017,6 +2017,13 @@ graphql-jit@0.8.6:
     lodash.merge "4.6.2"
     lodash.mergewith "4.6.2"
 
+graphql-scalars@^1.23.0:
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.23.0.tgz#486785d1a6f9449277054a92afc7e1fb73f459d6"
+  integrity sha512-YTRNcwitkn8CqYcleKOx9IvedA8JIERn8BRq21nlKgOr4NEcTaWEG0sT+H92eF3ALTFbPgsqfft4cw+MGgv0Gg==
+  dependencies:
+    tslib "^2.5.0"
+
 graphql-yoga@^5.8.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/graphql-yoga/-/graphql-yoga-5.8.0.tgz#990cd35a5f92e1e58b5321569bdc465ddfe58351"

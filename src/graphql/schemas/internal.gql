@@ -25,7 +25,7 @@ type PageInfo {
   endCursor: String
 }
 
-type Pet {
+type Pet @key(fields: "id") {
   id: ID!
   type: PetType!
   ownerId: ID!

@@ -60,3 +60,9 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
     }),
   }),
 });
+
+builder.asEntity(PetRef, {
+  key: builder.selection<{ id: string }>("id"),
+  resolveReference: (user, context) =>
+    PetRef.getDataloader(context).load(user.id),
+});

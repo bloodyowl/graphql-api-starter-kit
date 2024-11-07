@@ -26,9 +26,9 @@ import { ZodError, type ZodFormattedError } from "zod";
 export const builder = new SchemaBuilder<{
   Context: RequestContext;
   Scalars: {
-    ID: {
-      Input: string;
-      Output: string;
+    Date: {
+      Input: Date;
+      Output: Date;
     };
   };
   Connection: {
