@@ -4,7 +4,6 @@ import { PetTypeEnum, petTypes } from "#app/graphql/objects/Pet.mts";
 import { PetCounter } from "#app/metrics/PetCounter.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
-import { type GetInput } from "#app/utils/types.mts";
 import { validate } from "#app/utils/validation.mts";
 import { z } from "zod";
 
@@ -18,7 +17,7 @@ export const RegisterPetInput = builder.inputType("RegisterPetInput", {
   }),
 });
 
-type Input = GetInput<typeof RegisterPetInput>;
+type Input = typeof RegisterPetInput.$inferInput;
 
 const registerPetInputSchema = z.object({
   description: z.optional(z.string().min(2).max(100)),

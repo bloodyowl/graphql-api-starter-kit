@@ -5,7 +5,6 @@ import { PetAlreadySuspendedRejection } from "#app/graphql/rejections/PetAlready
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
-import { type GetInput } from "#app/utils/types.mts";
 import { validate } from "#app/utils/validation.mts";
 import { Future, Option, Result } from "@swan-io/boxed";
 import { z } from "zod";
@@ -17,7 +16,7 @@ export const SuspendPetInput = builder.inputType("SuspendPetInput", {
   }),
 });
 
-type Input = GetInput<typeof SuspendPetInput>;
+type Input = typeof SuspendPetInput.$inferInput;
 
 const supendPetInputSchema = z.object({
   suspensionReason: z.optional(z.string().min(2).max(100)),

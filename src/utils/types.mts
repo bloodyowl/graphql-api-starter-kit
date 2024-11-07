@@ -25,8 +25,3 @@ export const deriveUnion = <T extends PropertyKey>(
   };
   return { keyMirror, array, set, is, P: P.when(is) };
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GetInput<T extends PothosSchemaTypes.InputObjectRef<any, any>> =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends PothosSchemaTypes.InputObjectRef<any, infer V> ? V : never;
