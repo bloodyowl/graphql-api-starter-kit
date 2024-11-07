@@ -10,6 +10,7 @@ type InternalErrorRejection implements Rejection {
 
 type Mutation {
   registerPet(input: RegisterPetInput!): RegisterPetPayload!
+  suspendPet(input: SuspendPetInput!): SuspendPetPayload!
 }
 
 type PageInfo {
@@ -23,7 +24,12 @@ type Pet {
   description: String
   id: ID!
   ownerId: ID!
+  statusInfo: PetStatusInfo!
   type: PetType!
+}
+
+type PetActiveStatusInfo implements PetStatusInfo {
+  status: PetStatus!
 }
 
 type PetConnection {
@@ -35,6 +41,20 @@ type PetConnection {
 type PetEdge {
   cursor: String!
   node: Pet!
+}
+
+enum PetStatus {
+  Active
+  Suspended
+}
+
+interface PetStatusInfo {
+  status: PetStatus!
+}
+
+type PetSuspendedStatusInfo implements PetStatusInfo {
+  status: PetStatus!
+  suspensionReasion: String
 }
 
 enum PetType {
@@ -74,6 +94,21 @@ type RegisterPetSuccessPayload {
 
 interface Rejection {
   message: String!
+}
+
+input SuspendPetInput {
+  id: ID!
+  suspensionReason: String
+}
+
+union SuspendPetPayload =
+  | InternalErrorRejection
+  | SuspendPetSuccessPayload
+  | UnauthorizedRejection
+  | ValidationRejection
+
+type SuspendPetSuccessPayload {
+  pet: Pet!
 }
 
 type UnauthorizedRejection implements Rejection {
