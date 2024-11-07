@@ -1,5 +1,5 @@
 import { builder } from "#app/graphql/builder.mts";
-import { PetType } from "#app/graphql/objects/Pet.mts";
+import { PetTypeEnum } from "#app/graphql/objects/Pet.mts";
 import { userPets, type UserPetArgs } from "#app/graphql/queries/userPets.mts";
 import {
   decodeArgs,
@@ -28,7 +28,7 @@ builder.objectField(User, "pets", t =>
     nullable: false,
     args: {
       ...t.arg.connectionArgs(),
-      types: t.arg({ type: [PetType] }),
+      types: t.arg({ type: [PetTypeEnum] }),
     },
     load: async (argsValues: EncodedArgs<UserPetArgs>[], context) =>
       Future.all(argsValues.map(args => userPets(decodeArgs(args), context)))

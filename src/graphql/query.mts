@@ -1,5 +1,5 @@
 import { builder } from "#app/graphql/builder.mts";
-import { PetRef, PetType } from "#app/graphql/objects/Pet.mts";
+import { PetRef, PetTypeEnum } from "#app/graphql/objects/Pet.mts";
 import { PetConnection } from "#app/graphql/objects/PetConnection.mts";
 import { type PetArgs, pets } from "#app/graphql/queries/pets.mts";
 import {
@@ -29,7 +29,7 @@ builder.queryType({
         type: PetConnection,
         args: {
           ...t.arg.connectionArgs(),
-          types: t.arg({ type: [PetType] }),
+          types: t.arg({ type: [PetTypeEnum] }),
         },
         load: async (argsValues: EncodedArgs<PetArgs>[], context) =>
           Future.all(argsValues.map(args => pets(decodeArgs(args), context)))

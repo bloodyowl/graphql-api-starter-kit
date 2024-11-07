@@ -1,6 +1,6 @@
 import { createPet } from "#app/db/createPet.mts";
 import { builder } from "#app/graphql/builder.mts";
-import { PetType, petTypes } from "#app/graphql/objects/Pet.mts";
+import { PetTypeEnum, petTypes } from "#app/graphql/objects/Pet.mts";
 import { PetCounter } from "#app/metrics/PetCounter.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
@@ -12,7 +12,7 @@ export const RegisterPetInput = builder.inputType("RegisterPetInput", {
   fields: t => ({
     description: t.string({ required: false }),
     type: t.field({
-      type: PetType,
+      type: PetTypeEnum,
       required: true,
     }),
   }),

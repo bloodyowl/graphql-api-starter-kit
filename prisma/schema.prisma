@@ -24,10 +24,16 @@ model Outbox {
   @@index([acknowledged, createdAt(sort: Asc)], name: "Outbox_acknowledged_createdAt_asc_idx")
 }
 
+enum PetType {
+  Cat
+  Dog
+  Giraffe
+}
+
 model Pet {
   id          String   @id
   ownerId     String
-  type        String /// @kyselyType("Cat" | "Dog" | "Giraffe")
+  type        PetType
   description String?
   createdAt   DateTime
   updatedAt   DateTime

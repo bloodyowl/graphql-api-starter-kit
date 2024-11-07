@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "PetType" AS ENUM ('Cat', 'Dog', 'Giraffe');
+
 -- CreateTable
 CREATE TABLE "Outbox" (
     "id" TEXT NOT NULL,
@@ -16,7 +19,8 @@ CREATE TABLE "Outbox" (
 CREATE TABLE "Pet" (
     "id" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
+    "type" "PetType" NOT NULL,
+    "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

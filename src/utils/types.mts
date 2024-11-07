@@ -14,7 +14,9 @@ type UnionToTuple<T> =
     ? [...UnionToTuple<Exclude<T, W>>, W]
     : [];
 
-export const deriveUnion = <T extends PropertyKey>(object: Record<T, true>) => {
+export const deriveUnion = <T extends PropertyKey>(
+  object: Record<T, unknown>,
+) => {
   const array = Dict.keys(object) as UnionToTuple<T>;
   const set = new Set(array);
   const is = (value: unknown): value is T => set.has(value as T);

@@ -2,21 +2,17 @@ import { getPetById } from "#app/db/getPetById.mts";
 import { builder } from "#app/graphql/builder.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { deriveUnion } from "#app/utils/types.mts";
-import { type Pet as PetTable } from "#types/db/db.mts";
+import { type Pet as PetTable, PetType } from "#types/db/db.mts";
 import { Future } from "@swan-io/boxed";
 import { type Selectable } from "kysely";
 
 type Pet = Selectable<PetTable>;
 
-export type PetType = Pet["type"];
+export { type PetType };
 
-export const petTypes = deriveUnion<PetType>({
-  Cat: true,
-  Dog: true,
-  Giraffe: true,
-});
+export const petTypes = deriveUnion<PetType>(PetType);
 
-export const PetType = builder.enumType("PetType", {
+export const PetTypeEnum = builder.enumType("PetType", {
   values: petTypes.array,
 });
 
@@ -34,7 +30,7 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
   load,
   fields: t => ({
     id: t.exposeID("id", { nullable: false }),
-    type: t.expose("type", { type: PetType, nullable: false }),
+    type: t.expose("type", { type: PetTypeEnum, nullable: false }),
     ownerId: t.exposeID("ownerId", {
       nullable: false,
       subGraphs: ["internal"],

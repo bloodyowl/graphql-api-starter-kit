@@ -73,7 +73,7 @@
       "line": 24
     },
     {
-      "file": "prisma/migrations/20241102192201_init/migration.sql",
+      "file": "prisma/migrations/20241107082535_init",
       "description": "When you run `yarn setup`, Prisma will create the associated migration to run. You can edit them if needed, but be careful.",
       "line": 2,
       "selection": {
