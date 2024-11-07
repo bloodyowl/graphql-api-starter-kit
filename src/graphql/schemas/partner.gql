@@ -3,7 +3,7 @@
 extend schema
   @link(
     url: "https://specs.apollo.dev/federation/v2.4"
-    import: ["@extends", "@external", "@key"]
+    import: ["@extends", "@external", "@key", "@shareable"]
   )
 
 type CannotRegisterPetRejection implements Rejection {
@@ -29,7 +29,7 @@ type PageInfo {
 type Pet @key(fields: "id") {
   id: ID!
   type: PetType!
-  ownerId: ID!
+  ownerId: ID! @shareable
   description: String
   statusInfo: PetStatusInfo!
 }
