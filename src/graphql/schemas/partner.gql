@@ -29,6 +29,7 @@ type PageInfo {
 type Pet @key(fields: "id") {
   id: ID!
   type: PetType!
+  ownerId: ID!
   description: String
   statusInfo: PetStatusInfo!
 }

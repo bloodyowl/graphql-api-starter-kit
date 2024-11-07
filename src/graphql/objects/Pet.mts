@@ -39,7 +39,7 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
     type: t.expose("type", { type: PetTypeEnum, nullable: false }),
     ownerId: t.exposeID("ownerId", {
       nullable: false,
-      subGraphs: ["internal"],
+      subGraphs: ["partner", "internal"],
     }),
     description: t.exposeString("description"),
     statusInfo: t.field({
