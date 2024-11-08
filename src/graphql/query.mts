@@ -1,5 +1,5 @@
 import { builder } from "#app/graphql/builder.mts";
-import { PetRef, PetTypeEnum } from "#app/graphql/objects/Pet.mts";
+import { Pet, PetTypeEnum } from "#app/graphql/objects/Pet.mts";
 import { PetConnection } from "#app/graphql/objects/PetConnection.mts";
 import { type PetArgs, pets } from "#app/graphql/queries/pets.mts";
 import {
@@ -14,7 +14,7 @@ import { Future, Result } from "@swan-io/boxed";
 builder.queryType({
   fields: t => ({
     pet: t.field({
-      type: PetRef,
+      type: Pet,
       args: {
         id: t.arg.id({ required: true }),
       },

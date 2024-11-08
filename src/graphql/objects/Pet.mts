@@ -1,10 +1,12 @@
 import { getPetById } from "#app/db/getPetById.mts";
 import { builder } from "#app/graphql/builder.mts";
+import { PetRef } from "#app/graphql/objects/PetRef.mts";
 import {
   PetActiveStatusInfo,
   PetStatusInfoInterface,
   PetSuspendedStatusInfo,
 } from "#app/graphql/objects/PetStatusInfo.mts";
+import { User } from "#app/graphql/objects/User.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { deriveUnion } from "#app/utils/types.mts";
 import { type Pet as PetTable, PetType } from "#types/db/db.mts";
@@ -32,7 +34,7 @@ export const load = async (ids: string[], context: RequestContext) => {
   );
 };
 
-export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
+export const Pet = builder.loadableObject(PetRef, {
   load,
   fields: t => ({
     id: t.exposeID("id", { nullable: false }),
@@ -41,6 +43,11 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
       nullable: false,
       shareable: true,
       subGraphs: ["partner", "internal"],
+    }),
+    owner: t.field({
+      type: User,
+      nullable: false,
+      resolve: parent => ({ id: parent.id }),
     }),
     description: t.exposeString("description"),
     statusInfo: t.field({
@@ -64,6 +71,5 @@ export const PetRef = builder.loadableObject(builder.objectRef<Pet>("Pet"), {
 
 builder.asEntity(PetRef, {
   key: builder.selection<{ id: string }>("id"),
-  resolveReference: (user, context) =>
-    PetRef.getDataloader(context).load(user.id),
+  resolveReference: (user, context) => Pet.getDataloader(context).load(user.id),
 });

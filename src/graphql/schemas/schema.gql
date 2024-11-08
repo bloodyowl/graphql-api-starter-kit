@@ -23,6 +23,7 @@ type PageInfo {
 type Pet {
   description: String
   id: ID!
+  owner: User!
   ownerId: ID!
   statusInfo: PetStatusInfo!
   type: PetType!

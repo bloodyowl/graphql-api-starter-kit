@@ -1,5 +1,5 @@
 import { countPets, getPetsConnection } from "#app/db/getPetsConnection.mts";
-import { PetRef, petTypes, type PetType } from "#app/graphql/objects/Pet.mts";
+import { Pet, petTypes, type PetType } from "#app/graphql/objects/Pet.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { DatabaseError } from "#app/utils/errors.mts";
@@ -43,7 +43,7 @@ export const pets = (
         )
           .tapOk(pets => {
             pets.forEach(pet => {
-              PetRef.getDataloader(context).prime(pet.id, pet);
+              Pet.getDataloader(context).prime(pet.id, pet);
             });
           })
           .resultToPromise();

@@ -7,7 +7,7 @@ import {
   suspendPet,
   SuspendPetInput,
 } from "#app/graphql/mutations/suspendPet.mts";
-import { PetRef } from "#app/graphql/objects/Pet.mts";
+import { PetRef } from "#app/graphql/objects/PetRef.mts";
 import { CannotRegisterPetRejection } from "#app/graphql/rejections/CannotRegisterPetRejection.mts";
 import { PetSuspendInvalidStatusRejection } from "#app/graphql/rejections/PetSuspendInvalidStatusRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
