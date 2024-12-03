@@ -21,8 +21,8 @@
     "format": "prettier 'src/**/*' --ignore-unknown --write",
     "dev": "node --no-warnings --experimental-strip-types --watch --env-file=.env --import ./src/tracing.mts src/index.mts",
     "start": "node --no-warnings --experimental-strip-types --import ./src/tracing.mts src/index.mts",
-    "test": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true src/**/*.test.mts",
-    "test-watch": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true --watch src/**/*.test.mts",
+    "test": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true --test-reporter=spec src/**/*.test.mts",
+    "test-watch": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true  --test-reporter=spec --watch src/**/*.test.mts",
     "configure-hooks": "git config --local core.hooksPath .hooks"
   },
   "imports": {
