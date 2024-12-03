@@ -37,6 +37,8 @@ jobs:
 
       - name: Run tests
         run: yarn test
+        env:
+          FORCE_COLOR: 1
 
       - name: Check for partner API breaking changes
         uses: kamilkisiela/graphql-inspector@master
