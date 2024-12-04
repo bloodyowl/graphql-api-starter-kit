@@ -3,7 +3,7 @@ import { updatePet } from "#app/db/updatePet.mts";
 import { builder } from "#app/graphql/builder.mts";
 import { PetSuspendInvalidStatusRejection } from "#app/graphql/rejections/PetSuspendInvalidStatusRejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
-import { toSuspendedPet } from "#app/records/Pet.ts";
+import { toSuspendedPet } from "#app/records/Pet.mts";
 import { type UserAuth } from "#app/utils/auth.mts";
 import { type AuthenticatedRequestContext } from "#app/utils/context.mts";
 import { validate } from "#app/utils/validation.mts";

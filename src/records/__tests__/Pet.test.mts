@@ -1,4 +1,4 @@
-import { toSuspendedPet } from "#app/records/Pet.ts";
+import { toSuspendedPet } from "#app/records/Pet.mts";
 import { assertEqual } from "#app/tests/testWithApp.mts";
 import test, { suite } from "node:test";
 
