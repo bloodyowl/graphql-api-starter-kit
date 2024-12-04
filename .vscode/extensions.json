@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "connor4312.nodejs-testing",
+    "prisma.prisma",
+    "esbenp.prettier-vscode",
+    "graphql.vscode-graphql-syntax",
+    "graphql.vscode-graphql",
+    "vsls-contrib.codetour",
+    "ms-azuretools.vscode-docker"
+  ]
+}

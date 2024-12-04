@@ -2,5 +2,17 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.preferTypeOnlyAutoImports": true
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "nodejs-testing.extensions": [
+    {
+      "filePatterns": ["src/**/*.test.mts"],
+      "extensions": ["mts"],
+      "concurrency": true,
+      "parameters": [
+        "--no-warnings",
+        "--experimental-strip-types",
+        "--env-file=.env.test"
+      ]
+    }
+  ]
 }
