@@ -38,11 +38,11 @@ export type Kafka = {
 
   emit: <Topic extends keyof Topics>(message: {
     topic: Topic;
-    messages: {
+    messages: Array<{
       key: string;
       value: Topics[Topic];
       partition?: number;
       headers?: IHeaders;
-    }[];
-  }) => Future<Result<RecordMetadata[], KafkaError>>;
+    }>;
+  }) => Future<Result<Array<RecordMetadata>, KafkaError>>;
 };

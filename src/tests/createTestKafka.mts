@@ -11,17 +11,19 @@ import { Future, Result } from "@swan-io/boxed";
 import { type IHeaders } from "kafkajs";
 
 export type TestKafka = {
-  emitted: () => {
-    [Topic in keyof Topics]: {
-      topic: Topic;
-      messages: {
-        key: string;
-        value: Topics[Topic];
-        partition?: number;
-        headers?: IHeaders;
-      }[];
-    };
-  }[keyof Topics][];
+  emitted: () => Array<
+    {
+      [Topic in keyof Topics]: {
+        topic: Topic;
+        messages: Array<{
+          key: string;
+          value: Topics[Topic];
+          partition?: number;
+          headers?: IHeaders;
+        }>;
+      };
+    }[keyof Topics]
+  >;
   receive: <Topic extends keyof Topics>(message: {
     topic: Topic;
     partition: number;
@@ -34,33 +36,37 @@ export type TestKafka = {
 };
 
 export const createTestKafka = async (context: EventContext) => {
-  const emitted: {
-    [Topic in keyof Topics]: {
-      topic: Topic;
-      messages: {
-        key: string;
-        value: Topics[Topic];
-        partition?: number;
-        headers?: IHeaders;
-      }[];
-    };
-  }[keyof Topics][] = [];
+  const emitted: Array<
+    {
+      [Topic in keyof Topics]: {
+        topic: Topic;
+        messages: Array<{
+          key: string;
+          value: Topics[Topic];
+          partition?: number;
+          headers?: IHeaders;
+        }>;
+      };
+    }[keyof Topics]
+  > = [];
   const subscribers = new Map();
 
   const kafka: Kafka & TestKafka = {
     emit: message => {
       emitted.push(
-        message as {
-          [Topic in keyof Topics]: {
-            topic: Topic;
-            messages: {
-              key: string;
-              value: Topics[Topic];
-              partition?: number;
-              headers?: IHeaders;
-            }[];
-          };
-        }[keyof Topics][][number],
+        message as Array<
+          {
+            [Topic in keyof Topics]: {
+              topic: Topic;
+              messages: Array<{
+                key: string;
+                value: Topics[Topic];
+                partition?: number;
+                headers?: IHeaders;
+              }>;
+            };
+          }[keyof Topics]
+        >[number],
       );
       return Future.value(
         Result.Ok(

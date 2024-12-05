@@ -30,7 +30,7 @@ builder.objectField(User, "pets", t =>
       ...t.arg.connectionArgs(),
       types: t.arg({ type: [PetTypeEnum] }),
     },
-    load: async (argsValues: EncodedArgs<UserPetArgs>[], context) =>
+    load: async (argsValues: Array<EncodedArgs<UserPetArgs>>, context) =>
       Future.all(argsValues.map(args => userPets(decodeArgs(args), context)))
         .map(Result.all)
         .resultToPromise(),

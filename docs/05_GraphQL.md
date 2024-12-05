@@ -43,14 +43,8 @@ type Pet = { id: string; type: PetType; ownerId: string };
 
 export const Pet = builder.objectRef<Pet>("Pet");
 
-export const load = async (ids: string[], context: RequestContext) => {
-  return await Future.all(
-    ids.map(id =>
-      getPetById({ id }, context.db)
-        // We need to cast as `Pet` as DataLoader doesn't accept `null`
-        .map(result => result.toOption().toNull() as Pet),
-    ),
-  );
+export const load = (ids: Array<string>, context: RequestContext) => {
+  return getPetsByIds({ ids }, context.db).resultToPromise();
 };
 
 export const PetRef = builder.loadableNode(Pet, {
@@ -108,7 +102,7 @@ builder.queryType({
 
 ```ts
 export type PetArgs = DefaultConnectionArguments & {
-  types?: PetType[] | undefined | null;
+  types?: Array<PetType> | undefined | null;
 };
 
 export const pets = (
@@ -162,7 +156,7 @@ export const pets = (
 
 ```ts
 type Filters = {
-  types: PetType[];
+  types: Array<PetType>;
   userId: string;
 };
 

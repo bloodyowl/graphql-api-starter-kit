@@ -1,4 +1,4 @@
-import { getPetById } from "#app/db/getPetById.mts";
+import { getPetsByIds } from "#app/db/getPetsByIds.mts";
 import { builder } from "#app/graphql/builder.mts";
 import { PetRef } from "#app/graphql/objects/PetRef.mts";
 import {
@@ -10,7 +10,6 @@ import { User } from "#app/graphql/objects/User.mts";
 import { type RequestContext } from "#app/utils/context.mts";
 import { deriveUnion } from "#app/utils/types.mts";
 import { type Pet as PetTable, PetType } from "#types/db/db.mts";
-import { Future } from "@swan-io/boxed";
 import { type Selectable } from "kysely";
 import { match } from "ts-pattern";
 
@@ -24,14 +23,8 @@ export const PetTypeEnum = builder.enumType("PetType", {
   values: petTypes.array,
 });
 
-export const load = async (ids: string[], context: RequestContext) => {
-  return await Future.all(
-    ids.map(id =>
-      getPetById({ id }, context.db)
-        // We need to cast as `Pet` as DataLoader doesn't accept `null`
-        .map(result => result.toOption().toNull() as Pet),
-    ),
-  );
+export const load = (ids: Array<string>, context: RequestContext) => {
+  return getPetsByIds({ ids }, context.db).resultToPromise();
 };
 
 export const Pet = builder.loadableObject(PetRef, {

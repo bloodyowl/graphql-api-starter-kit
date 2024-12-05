@@ -10,7 +10,7 @@ export type UserAuth = {
   userId: string;
   projectId: string;
   oauthClientId: string;
-  oauthScopes: string[];
+  oauthScopes: Array<string>;
   authorization: string;
 };
 
@@ -19,7 +19,7 @@ export type ProjectAuth = {
   env: Env;
   projectId: string;
   oauthClientId: string;
-  oauthScopes: string[];
+  oauthScopes: Array<string>;
   authorization: string;
 };
 
@@ -29,7 +29,7 @@ export type ProjectMemberAuth = {
   userId: string;
   projectId: string;
   oauthClientId: string;
-  oauthScopes: string[];
+  oauthScopes: Array<string>;
   authorization: string;
 };
 

@@ -1,6 +1,6 @@
 import { number, oneOf, string, url, validate, type Validator } from "valienv";
 
-const urlArray: Validator<string[]> = value => {
+const urlArray: Validator<Array<string>> = value => {
   const urls = value?.split(",");
   if (urls == undefined) {
     return undefined;

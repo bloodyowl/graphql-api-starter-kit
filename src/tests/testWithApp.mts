@@ -121,7 +121,7 @@ export const testWithApp = (
                     Data,
                     | BadStatusError
                     | InvalidGraphQLResponseError
-                    | GraphQLError[]
+                    | Array<GraphQLError>
                   >
                 >()
                 .with({ statusCode: P.not(200) }, () =>

@@ -37,7 +37,7 @@ type Permission =
 
 export const filterAccountMembership = <
   const RequiredPermissions extends Partial<Record<Permission, boolean>>,
-  const AcceptedStatuses extends AccountMembershipStatus[],
+  const AcceptedStatuses extends Array<AccountMembershipStatus>,
 >(
   client: PartnerClient,
   {

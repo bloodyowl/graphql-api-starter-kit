@@ -13,7 +13,7 @@ import { Future, Lazy } from "@swan-io/boxed";
 
 export type UserPetArgs = DefaultConnectionArguments & {
   userId: string;
-  types?: PetType[] | undefined | null;
+  types?: Array<PetType> | undefined | null;
 };
 
 export const userPets = (

@@ -13,6 +13,13 @@ export default tseslint.config(
           prefer: "type-imports",
         },
       ],
+      "@typescript-eslint/array-type": [
+        "error",
+        {
+          default: "generic",
+          readonly: "generic",
+        },
+      ],
     },
-  }
+  },
 );

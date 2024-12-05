@@ -31,7 +31,7 @@ builder.queryType({
           ...t.arg.connectionArgs(),
           types: t.arg({ type: [PetTypeEnum] }),
         },
-        load: async (argsValues: EncodedArgs<PetArgs>[], context) =>
+        load: async (argsValues: Array<EncodedArgs<PetArgs>>, context) =>
           Future.all(argsValues.map(args => pets(decodeArgs(args), context)))
             .map(Result.all)
             .resultToPromise(),

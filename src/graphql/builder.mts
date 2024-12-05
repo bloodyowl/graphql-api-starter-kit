@@ -145,8 +145,8 @@ builder.objectType(UnauthorizedRejection, {
 
 const flattenErrors = (
   error: ZodFormattedError<unknown>,
-  path: string[],
-): { path: string[]; message: string }[] => {
+  path: Array<string>,
+): Array<{ path: Array<string>; message: string }> => {
   const errors = error._errors.map(message => ({
     path,
     message,
@@ -169,7 +169,7 @@ const flattenErrors = (
 const ValidationFieldError = builder
   .objectRef<{
     message: string;
-    path: string[];
+    path: Array<string>;
   }>("ValidationFieldError")
   .implement({
     fields: t => ({

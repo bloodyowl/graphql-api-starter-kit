@@ -64,8 +64,8 @@ export const parseGraphQLError = (error: unknown): GraphQLError => {
         return new GraphQLError(message, {
           nodes: nodes as ReadonlyArray<ASTNode> | ASTNode | null | undefined,
           source: source as Source | null | undefined,
-          positions: positions as readonly number[] | null | undefined,
-          path: path as readonly (string | number)[] | null | undefined,
+          positions: positions as ReadonlyArray<number> | null | undefined,
+          path: path as ReadonlyArray<string | number> | null | undefined,
           originalError,
           extensions: extensions as
             | {

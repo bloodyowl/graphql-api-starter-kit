@@ -9,7 +9,7 @@ import { type ResolveCursorConnectionArgs } from "@pothos/plugin-relay";
 import { Future } from "@swan-io/boxed";
 
 type Filters = {
-  types: PetType[];
+  types: Array<PetType>;
   userId: string;
 };
 

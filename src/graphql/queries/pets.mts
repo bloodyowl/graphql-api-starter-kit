@@ -12,7 +12,7 @@ import {
 import { Future, Lazy } from "@swan-io/boxed";
 
 export type PetArgs = DefaultConnectionArguments & {
-  types?: PetType[] | undefined | null;
+  types?: Array<PetType> | undefined | null;
 };
 
 export const pets = (

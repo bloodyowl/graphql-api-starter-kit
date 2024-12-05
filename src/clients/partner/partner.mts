@@ -21,7 +21,10 @@ export type PartnerClient = {
     document: TadaDocumentNode<Data, Variables>,
     variables: Variables,
   ) => Future<
-    Result<Data, BadStatusError | InvalidGraphQLResponseError | GraphQLError[]>
+    Result<
+      Data,
+      BadStatusError | InvalidGraphQLResponseError | Array<GraphQLError>
+    >
   >;
 };
 
@@ -90,7 +93,7 @@ export const createPartnerClient = (authorization?: string) => {
         string,
         Result<
           Data,
-          BadStatusError | InvalidGraphQLResponseError | GraphQLError[]
+          BadStatusError | InvalidGraphQLResponseError | Array<GraphQLError>
         >
       >;
 
@@ -101,7 +104,7 @@ export const createPartnerClient = (authorization?: string) => {
             error as
               | BadStatusError
               | InvalidGraphQLResponseError
-              | GraphQLError[],
+              | Array<GraphQLError>,
         );
     },
   };
