@@ -53,6 +53,7 @@
     "@pothos/plugin-scope-auth": "^4.1.0",
     "@pothos/plugin-simple-objects": "^4.1.0",
     "@pothos/plugin-sub-graph": "^4.2.0",
+    "@pothos/plugin-tracing": "^1.1.0",
     "@swan-io/boxed": "^3.1.2",
     "accept-language": "^3.0.20",
     "dataloader": "^2.2.2",

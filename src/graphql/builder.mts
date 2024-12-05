@@ -6,6 +6,10 @@ import FederationPlugin, { hasResolvableKey } from "@pothos/plugin-federation";
 import RelayPlugin from "@pothos/plugin-relay";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import SubGraphPlugin from "@pothos/plugin-sub-graph";
+import TracingPlugin, {
+  isRootField,
+  wrapResolver,
+} from "@pothos/plugin-tracing";
 
 import { Dict, type Future, type Result } from "@swan-io/boxed";
 
@@ -13,6 +17,7 @@ import { env } from "#app/env.mts";
 import { Rejection } from "#app/graphql/rejections/Rejection.mts";
 import { UnauthorizedRejection } from "#app/graphql/rejections/UnauthorizedRejection.mts";
 import { subGraphs, type SubGraph } from "#app/graphql/subGraphs.mts";
+import { loggerAsyncLocalStorage } from "#app/utils/asyncLocalStorage.mts";
 import {
   type Auth,
   type ProjectAuth,
@@ -56,6 +61,7 @@ export const builder = new SchemaBuilder<{
     DirectivePlugin,
     FederationPlugin,
     SubGraphPlugin,
+    TracingPlugin,
   ],
   // Expose the connection types and builders
   relay: {
@@ -102,6 +108,19 @@ export const builder = new SchemaBuilder<{
         project: auth?.type === "Project",
         projectMember: auth?.type === "ProjectMember",
       };
+    },
+  },
+  tracing: {
+    // Enable tracing for rootFields by default, other fields need to opt in
+    default: config => isRootField(config),
+    // Log resolver execution duration
+    wrap: (resolver, _options, config) => {
+      return wrapResolver(resolver, () => {
+        const logger = loggerAsyncLocalStorage.getStore();
+        if (logger !== undefined) {
+          logger.info(`${config.parentType}.${config.name} resolved`);
+        }
+      });
     },
   },
 });

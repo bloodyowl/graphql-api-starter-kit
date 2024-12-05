@@ -552,6 +552,11 @@
   resolved "https://registry.yarnpkg.com/@pothos/plugin-sub-graph/-/plugin-sub-graph-4.2.0.tgz#5577ac39b1e6db30e856a26dbad8f0bc1af00dd7"
   integrity sha512-HlMYgq9BeoC92oKyg5zVy60X4smPfg0urBbFKcgxRJMtDN265arac+nSc29oaxGPBhkj+X/cEv39UdXFJ4Vbog==
 
+"@pothos/plugin-tracing@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@pothos/plugin-tracing/-/plugin-tracing-1.1.0.tgz#81308cb7b22abaa13d3e6c13316a2f1cdc315348"
+  integrity sha512-x79Z0Of8b8KkXxynvj65IJRCeLPztAEkPWXgGPpPm5fmDRrhQ5UB9JTtO4WO/QKLmZXrVFdTx3p3qQNc93CH6Q==
+
 "@prisma/debug@5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-5.22.0.tgz#58af56ed7f6f313df9fb1042b6224d3174bbf412"
