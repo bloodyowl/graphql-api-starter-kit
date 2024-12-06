@@ -14,5 +14,17 @@
         "--env-file=.env.test"
       ]
     }
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Starter Kit",
+      "database": "swan-app",
+      "username": "postgres",
+      "password": "postgres"
+    }
   ]
 }
