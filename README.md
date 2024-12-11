@@ -9,6 +9,8 @@ $ yarn
 $ yarn configure-hooks
 ```
 
+Then, create a `.env` file. You can duplicate the contents from `.env.example`.
+
 ## Codegen
 
 To update the database schemas, you can run the codegen command:
