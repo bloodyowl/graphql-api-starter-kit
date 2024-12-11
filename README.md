@@ -52,6 +52,14 @@ You can then open `https://localhost:3000/graphql` and try the explorer.
 
 You can preview all the subgraphs you expose (e.g. `https://localhost:3000/partner-graphql`, `https://localhost:3000/internal-graphql`).
 
+If you need a token to simulate authentication, you can use the `get-test-token` command:
+
+```console
+$ yarn get-test-token user
+$ yarn get-test-token project
+$ yarn get-test-token project-member
+```
+
 ## Run tests
 
 ```console
