@@ -29,7 +29,6 @@ type PageInfo {
 type Pet @key(fields: "id") {
   id: ID!
   type: PetType!
-  ownerId: ID! @shareable
   owner: User!
   description: String
   statusInfo: PetStatusInfo!
