@@ -2,7 +2,6 @@
 
 ## Structure
 
-- [`clients`](./clients/): APIs the app consume
 - [`db`](./db/): database queries
 - [`events`](./events/): kafka event handlers
 - [`graphql`](./graphql/):

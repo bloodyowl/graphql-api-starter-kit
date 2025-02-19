@@ -1,9 +1,6 @@
-import { createPartnerClient } from "#app/clients/partner/partner.mts";
-import { filterAccountMembership } from "#app/clients/partner/queries/filterAccountMembership.mts";
 import { env } from "#app/env.mts";
 import { getAuth } from "#app/utils/auth.mts";
 import {
-  type ClientsContext,
   type Db,
   type EventContext,
   type RequestContext,
@@ -30,16 +27,13 @@ declare module "fastify" {
   }
 }
 
-export const start = async <K extends Kafka>(
-  {
-    db,
-    getKafka,
-  }: {
-    db: Db;
-    getKafka: (context: EventContext) => Promise<K>;
-  },
-  clientsContext?: Partial<ClientsContext>,
-) => {
+export const start = async <K extends Kafka>({
+  db,
+  getKafka,
+}: {
+  db: Db;
+  getKafka: (context: EventContext) => Promise<K>;
+}) => {
   const app = fastify({
     trustProxy: true,
     bodyLimit: 2_097_152, // 2MBs
@@ -92,12 +86,7 @@ export const start = async <K extends Kafka>(
     },
     log: app.log,
     featureFlags: createFeaturesFlags({}),
-    partnerClient: createPartnerClient(),
     t: createTranslationHelper("en"),
-
-    // client context
-    filterAccountMembership,
-    ...clientsContext,
   };
 
   const kafka = await getKafka(eventContext);
@@ -113,7 +102,6 @@ export const start = async <K extends Kafka>(
       request,
       reply,
       log: request.log,
-      partnerClient: createPartnerClient(auth?.authorization),
       featureFlags: createFeaturesFlags({
         userId: match(auth)
           .with({ userId: P.select(P.string) }, userId => userId)
@@ -124,9 +112,6 @@ export const start = async <K extends Kafka>(
         ip: request.ip,
       }),
       t: createTranslationHelper(getLocale(request.headers["accept-language"])),
-      // client context
-      filterAccountMembership,
-      ...clientsContext,
     };
   });
 

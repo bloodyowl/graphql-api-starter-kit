@@ -41,12 +41,6 @@
             "name": "self",
             "schema": "./src/graphql/schemas/schema.gql",
             "tadaOutputLocation": "./types/graphql/schema-env.d.ts"
-          },
-          // Clients
-          {
-            "name": "partner",
-            "schema": "./scripts/graphql/dist/partner-schema.gql",
-            "tadaOutputLocation": "./types/graphql/clients-partner-env.d.ts"
           }
         ]
       }

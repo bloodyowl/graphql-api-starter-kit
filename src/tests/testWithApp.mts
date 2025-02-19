@@ -1,6 +1,5 @@
 import { start } from "#app/app.mts";
 import { type Kafka } from "#app/events/events.mts";
-import { type ClientsContext } from "#app/utils/context.mts";
 import {
   BadStatusError,
   InvalidGraphQLResponseError,
@@ -47,7 +46,6 @@ export const testWithApp = (
     t: Translator;
     db: Kysely<DB>;
     kafka: Kafka & TestKafka;
-    clientsContext: Partial<ClientsContext>;
     partner: {
       graphql: typeof partnerGraphql;
       run: <Data, Variables>(
@@ -64,21 +62,15 @@ export const testWithApp = (
 
     const db = mock.adapters.createKysely() as Kysely<DB>;
 
-    const clientsContext: Partial<ClientsContext> = {};
-
-    const { app, kafka } = await start(
-      {
-        db,
-        getKafka: createTestKafka,
-      },
-      clientsContext,
-    );
+    const { app, kafka } = await start({
+      db,
+      getKafka: createTestKafka,
+    });
 
     const t = createTranslationHelper("en");
 
     await func({
       db,
-      clientsContext,
       kafka,
       t,
       partner: {

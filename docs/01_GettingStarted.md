@@ -63,7 +63,6 @@ $ yarn test
 - `prisma`: database schema
 - `scripts`: build utils
 - `src`:
-  - `clients`: APIs the app consume
   - `db`: database queries
   - `events`: kafka event handlers
   - `graphql`: schemas definitions
