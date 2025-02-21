@@ -1,5 +1,7 @@
 import { builder } from "#app/graphql/builder.mts";
 
+import "#app/graphql/scalars/DateTime.mts";
+
 import "#app/graphql/mutation.mts";
 import "#app/graphql/query.mts";
 
