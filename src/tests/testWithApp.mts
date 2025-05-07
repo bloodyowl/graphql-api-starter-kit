@@ -10,15 +10,16 @@ import { type DB } from "#types/db/db.mts";
 import type { introspection } from "#types/graphql/schema-env.d.ts";
 
 import { createTranslationHelper, type Translator } from "#app/i18n/i18n.mts";
+import { PGlite } from "@electric-sql/pglite";
 import { Future, Result } from "@swan-io/boxed";
 import { initGraphQLTada, type TadaDocumentNode } from "gql.tada";
 import { type GraphQLError, print } from "graphql";
-import { type Kysely } from "kysely";
+import { Kysely } from "kysely";
+import { PGliteDialect } from "kysely-pglite-dialect";
 import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
-import { newDb } from "pg-mem";
 import { match, P } from "ts-pattern";
 import { createTestKafka, type TestKafka } from "./createTestKafka.mts";
 
@@ -34,11 +35,6 @@ export class FastifyError extends Error {
     this.cause = cause;
   }
 }
-
-const migration = fs.readFileSync(
-  path.join(process.cwd(), "prisma/generated.sql"),
-  "utf8",
-);
 
 export const testWithApp = (
   name: string,
@@ -57,10 +53,15 @@ export const testWithApp = (
   }) => Promise<void>,
 ) => {
   test(name, async () => {
-    const mock = newDb();
-    mock.public.none(migration);
+    const pglite = new PGlite({
+      loadDataDir: new Blob([
+        fs.readFileSync(path.join(process.cwd(), "src/tests/databases/pglite")),
+      ]),
+    });
 
-    const db = mock.adapters.createKysely() as Kysely<DB>;
+    const db = new Kysely<DB>({
+      dialect: new PGliteDialect(pglite),
+    });
 
     const { app, kafka } = await start({
       db,

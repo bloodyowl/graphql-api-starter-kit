@@ -4,3 +4,4 @@ types/graphql/*-env.d.ts
 types/db/*.mts
 dist/
 .env
+src/tests/databases/
