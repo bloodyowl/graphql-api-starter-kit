@@ -21,8 +21,8 @@
     "format": "prettier 'src/**/*' --ignore-unknown --write",
     "dev": "node --no-warnings --experimental-strip-types --watch --env-file=.env --import ./src/tracing.mts src/index.mts",
     "start": "node --no-warnings --experimental-strip-types --import ./src/tracing.mts src/index.mts",
-    "test": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true --test-reporter=spec src/**/*.test.mts",
-    "test-watch": "node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true  --test-reporter=spec --watch src/**/*.test.mts",
+    "test": "node --no-warnings --experimental-strip-types src/tests/setupTestDatabaseTemplate.mts && node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true --test-reporter=spec src/**/*.test.mts",
+    "test-watch": "node --no-warnings --experimental-strip-types src/tests/setupTestDatabaseTemplate.mts && node --no-warnings --experimental-strip-types --env-file=.env.test --test --test-concurrency=true  --test-reporter=spec --watch src/**/*.test.mts",
     "configure-hooks": "git config --local core.hooksPath .hooks"
   },
   "imports": {
@@ -77,13 +77,14 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.0",
     "@eslint/js": "^9.14.0",
     "@prisma/migrate": "^5.21.1",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.8.4",
     "@types/pg": "^8.11.10",
     "eslint": "^9.14.0",
-    "pg-mem": "^3.0.3",
+    "kysely-pglite-dialect": "^1.0.5",
     "prisma": "^5.21.1",
     "prisma-kysely": "^1.8.0",
     "tggl-cli": "^1.4.0",
