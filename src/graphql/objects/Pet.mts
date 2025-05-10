@@ -35,7 +35,7 @@ export const Pet = builder.loadableObject(PetRef, {
     ownerId: t.exposeID("ownerId", {
       nullable: false,
       shareable: true,
-      subGraphs: ["partner", "internal"],
+      subGraphs: ["internal"],
     }),
     owner: t.field({
       type: User,
